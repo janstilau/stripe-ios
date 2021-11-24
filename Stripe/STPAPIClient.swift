@@ -1052,6 +1052,7 @@ extension STPAPIClient {
                     if let error = error {
                         shared_lastError = error
                     }
+                    // 在这里, 将所有的支付意向, 进行了存储. 
                     if let paymentMethods = deserializer?.paymentMethods {
                         shared_allPaymentMethods.append(contentsOf: paymentMethods)
                     }

@@ -11,12 +11,14 @@ import Stripe
 import UIKit
 
 class ExampleCustomCheckoutViewController: UIViewController {
+    
     @IBOutlet weak var buyButton: UIButton!
     @IBOutlet weak var paymentMethodButton: UIButton!
     @IBOutlet weak var paymentMethodImage: UIImageView!
+    
     var paymentSheetFlowController: PaymentSheet.FlowController!
-    let backendCheckoutUrl = URL(string: "https://stripe-mobile-payment-sheet.glitch.me/checkout")!  // An example backend endpoint
-
+    
+    let backendCheckoutUrl = URL(string: "https://stripe-mobile-payment-sheet.glitch.me/checkout")!
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -47,15 +49,30 @@ class ExampleCustomCheckoutViewController: UIViewController {
                 }
                 // MARK: Set your Stripe publishable key - this allows the SDK to make requests to Stripe for your account
                 STPAPIClient.shared.publishableKey = publishableKey
+                
+                /*
+                 publishableKey: pk_test_51HvTI7Lu5o3P18Zp6t5AgBSkMvWoTtA0nyA7pVYDqpfLkRtWun7qZTYCOHCReprfLM464yaBeF72UFfB7cY9WG4a00ZnDtiC2C
+                 ephemeralKey: ek_test_YWNjdF8xSHZUSTdMdTVvM1AxOFpwLEt2dEZpUlF2Q0dJdmRvZkhvd2tmYkxTNFlFck1mWGY_00oCkAa0w5
+                 customer: cus_KefKNWAv7XsPeT
+                 paymentIntent: pi_3JzM06Lu5o3P18Zp1bTA31xj_secret_KBq8pXAPvHyybVrjkqzXAbWL1
+                 */
+                var dictM: NSMutableDictionary = NSMutableDictionary()
+                for (key,value) in json {
+                    dictM[key] = value
+                }
 
                 // MARK: Create a PaymentSheet.FlowController instance
                 var configuration = PaymentSheet.Configuration()
                 configuration.merchantDisplayName = "Example, Inc."
-                configuration.applePay = .init(
-                    merchantId: "com.foo.example", merchantCountryCode: "US")
-                configuration.customer = .init(
-                    id: customerId, ephemeralKeySecret: customerEphemeralKeySecret)
+//                configuration.applePay = .init(
+//                    merchantId: "com.foo.example", merchantCountryCode: "US")
+                configuration.customer =
+                    .init(id: customerId, ephemeralKeySecret: customerEphemeralKeySecret)
                 configuration.returnURL = "payments-example://stripe-redirect"
+                
+                /*
+                    使用了工厂方法, 来创建对应的 PaymentSheet.FlowController
+                 */
                 PaymentSheet.FlowController.create(
                     paymentIntentClientSecret: paymentIntentClientSecret,
                     configuration: configuration
@@ -64,6 +81,7 @@ class ExampleCustomCheckoutViewController: UIViewController {
                     case .failure(let error):
                         print(error)
                     case .success(let paymentSheetFlowController):
+                        // 还是在这里, 通过后端的接口, 初始化了 paymentSheetFlowController
                         self?.paymentSheetFlowController = paymentSheetFlowController
                         self?.paymentMethodButton.isEnabled = true
                         self?.updateButtons()
@@ -75,6 +93,9 @@ class ExampleCustomCheckoutViewController: UIViewController {
 
     // MARK: - Button handlers
 
+    /*
+        选择支付方法的操作.
+     */
     @objc
     func didTapPaymentMethodButton() {
         // MARK: Present payment options to the customer
@@ -83,6 +104,9 @@ class ExampleCustomCheckoutViewController: UIViewController {
         }
     }
 
+    /*
+        真正的去进行支付的操作.
+     */
     @objc
     func didTapCheckoutButton() {
         // MARK: Confirm payment

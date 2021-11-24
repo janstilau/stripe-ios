@@ -686,21 +686,6 @@
 		E640A4BF265F269800B31E91 /* STPAnalyticsClient+Payments.swift in Sources */ = {isa = PBXBuildFile; fileRef = E640A4BE265F269800B31E91 /* STPAnalyticsClient+Payments.swift */; };
 		E640A4C1265F26A500B31E91 /* Analytic+Payments.swift in Sources */ = {isa = PBXBuildFile; fileRef = E640A4C0265F26A500B31E91 /* Analytic+Payments.swift */; };
 		E6598C8526952F7000278740 /* StripeBundleLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6598C8426952F7000278740 /* StripeBundleLocator.swift */; };
-		E6598C872695342000278740 /* StripeSharedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6598C862695342000278740 /* StripeSharedStrings.swift */; };
-		E66D20A925F02D9B00ED6CA0 /* IdentityVerificationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66D20A825F02D9B00ED6CA0 /* IdentityVerificationSheet.swift */; };
-		E66D20AD25F0303500ED6CA0 /* VerificationFlowWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66D20AC25F0303500ED6CA0 /* VerificationFlowWebViewController.swift */; };
-		E66D20B025F031FB00ED6CA0 /* VerificationFlowWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66D20AF25F031FB00ED6CA0 /* VerificationFlowWebView.swift */; };
-		E66D20B825F057FD00ED6CA0 /* VerificationClientSecret.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66D20B725F057FD00ED6CA0 /* VerificationClientSecret.swift */; };
-		E66D20BD25F05C7C00ED6CA0 /* IdentityVerificationSheetError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66D20BC25F05C7C00ED6CA0 /* IdentityVerificationSheetError.swift */; };
-		E66D20C225F0643200ED6CA0 /* VerifyWebURLHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66D20C125F0643200ED6CA0 /* VerifyWebURLHelper.swift */; };
-		E66D212E25F18A4D00ED6CA0 /* VerificationFlowWebViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66D212B25F18A1800ED6CA0 /* VerificationFlowWebViewSnapshotTests.swift */; };
-		E61BEEAC265F6B5B0002FA4F /* URLEncoderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E61BEEAB265F6B5B0002FA4F /* URLEncoderTest.swift */; };
-		E61BEEAE265F6BDC0002FA4F /* STPAnalyticsClientPaymentsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E61BEEAD265F6BDC0002FA4F /* STPAnalyticsClientPaymentsTest.swift */; };
-		E61BEEB0265F6CAC0002FA4F /* STPAnalyticsClientPaymentSheetTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E61BEEAF265F6CAC0002FA4F /* STPAnalyticsClientPaymentSheetTest.swift */; };
-		E620F1D8265F5FA200233581 /* PaymentAnalyticTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E620F1D7265F5FA200233581 /* PaymentAnalyticTest.swift */; };
-		E640A4BF265F269800B31E91 /* STPAnalyticsClient+Payments.swift in Sources */ = {isa = PBXBuildFile; fileRef = E640A4BE265F269800B31E91 /* STPAnalyticsClient+Payments.swift */; };
-		E640A4C1265F26A500B31E91 /* Analytic+Payments.swift in Sources */ = {isa = PBXBuildFile; fileRef = E640A4C0265F26A500B31E91 /* Analytic+Payments.swift */; };
-		E6598C8526952F7000278740 /* StripeBundleLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6598C8426952F7000278740 /* StripeBundleLocator.swift */; };
 		E6598C872695342000278740 /* String+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6598C862695342000278740 /* String+Localized.swift */; };
 		E69552D625CCDC0F00753FDA /* STPiDEALBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69552D525CCDC0F00753FDA /* STPiDEALBank.swift */; };
 		E69552EB25D1E4F000753FDA /* STPGenericInputPickerField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69552EA25D1E4EF00753FDA /* STPGenericInputPickerField.swift */; };
@@ -1360,7 +1345,6 @@
 		B649351B26AB4AC900B8EC66 /* icon-pm-giropay_dark@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-pm-giropay_dark@3x.png"; sourceTree = "<group>"; };
 		B649351C26AB4AC900B8EC66 /* icon-pm-afterpay_dark@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-pm-afterpay_dark@3x.png"; sourceTree = "<group>"; };
 		B64A1B81266AE97B0020A13C /* SectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionView.swift; sourceTree = "<group>"; };
-		B64A1B83266AEA060020A13C /* ContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerView.swift; sourceTree = "<group>"; };
 		B64A1B83266AEA060020A13C /* SectionContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionContainerView.swift; sourceTree = "<group>"; };
 		B654D6F226570B70008F534A /* FraudDetectionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FraudDetectionData.swift; sourceTree = "<group>"; };
 		B656292423E10AB100458A8E /* STPPaymentMethodBacsDebitTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = STPPaymentMethodBacsDebitTest.m; sourceTree = "<group>"; };
@@ -1479,22 +1463,6 @@
 		E640A4BE265F269800B31E91 /* STPAnalyticsClient+Payments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "STPAnalyticsClient+Payments.swift"; sourceTree = "<group>"; };
 		E640A4C0265F26A500B31E91 /* Analytic+Payments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytic+Payments.swift"; sourceTree = "<group>"; };
 		E6539B41269E4E1700E05D26 /* StripeCoreTestUtils.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = StripeCoreTestUtils.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E6598C8426952F7000278740 /* StripeBundleLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeBundleLocator.swift; sourceTree = "<group>"; };
-		E6598C862695342000278740 /* StripeSharedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeSharedStrings.swift; sourceTree = "<group>"; };
-		E66D20A825F02D9B00ED6CA0 /* IdentityVerificationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityVerificationSheet.swift; sourceTree = "<group>"; };
-		E66D20AC25F0303500ED6CA0 /* VerificationFlowWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationFlowWebViewController.swift; sourceTree = "<group>"; };
-		E66D20AF25F031FB00ED6CA0 /* VerificationFlowWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationFlowWebView.swift; sourceTree = "<group>"; };
-		E66D20B725F057FD00ED6CA0 /* VerificationClientSecret.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationClientSecret.swift; sourceTree = "<group>"; };
-		E66D20BC25F05C7C00ED6CA0 /* IdentityVerificationSheetError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityVerificationSheetError.swift; sourceTree = "<group>"; };
-		E66D20C125F0643200ED6CA0 /* VerifyWebURLHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyWebURLHelper.swift; sourceTree = "<group>"; };
-		E66D212B25F18A1800ED6CA0 /* VerificationFlowWebViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationFlowWebViewSnapshotTests.swift; sourceTree = "<group>"; };
-		E61BEEAB265F6B5B0002FA4F /* URLEncoderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLEncoderTest.swift; sourceTree = "<group>"; };
-		E61BEEAD265F6BDC0002FA4F /* STPAnalyticsClientPaymentsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STPAnalyticsClientPaymentsTest.swift; sourceTree = "<group>"; };
-		E61BEEAF265F6CAC0002FA4F /* STPAnalyticsClientPaymentSheetTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STPAnalyticsClientPaymentSheetTest.swift; sourceTree = "<group>"; };
-		E620F1D7265F5FA200233581 /* PaymentAnalyticTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentAnalyticTest.swift; sourceTree = "<group>"; };
-		E630ABD32652F4B300C7AA5D /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
-		E640A4BE265F269800B31E91 /* STPAnalyticsClient+Payments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "STPAnalyticsClient+Payments.swift"; sourceTree = "<group>"; };
-		E640A4C0265F26A500B31E91 /* Analytic+Payments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytic+Payments.swift"; sourceTree = "<group>"; };
 		E6598C8426952F7000278740 /* StripeBundleLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeBundleLocator.swift; sourceTree = "<group>"; };
 		E6598C862695342000278740 /* String+Localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Localized.swift"; sourceTree = "<group>"; };
 		E69552D525CCDC0F00753FDA /* STPiDEALBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STPiDEALBank.swift; sourceTree = "<group>"; };
@@ -2859,71 +2827,11 @@
 			name = JSON;
 			sourceTree = "<group>";
 		};
-		E66D20A725F02D7E00ED6CA0 /* Identity */ = {
-			isa = PBXGroup;
-			children = (
-				E66D20B425F0575E00ED6CA0 /* ViewControllers */,
-				E66D20B325F0575700ED6CA0 /* Views */,
-				E66D20A825F02D9B00ED6CA0 /* IdentityVerificationSheet.swift */,
-				E66D20BC25F05C7C00ED6CA0 /* IdentityVerificationSheetError.swift */,
-				E66D20B725F057FD00ED6CA0 /* VerificationClientSecret.swift */,
-				E66D20C125F0643200ED6CA0 /* VerifyWebURLHelper.swift */,
-				E633418325FC2FEA006F084B /* VerificationSheetAnalytics.swift */,
-			);
-			name = Identity;
-			sourceTree = "<group>";
-		};
-		E66D20B325F0575700ED6CA0 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				E66D20AF25F031FB00ED6CA0 /* VerificationFlowWebView.swift */,
-			);
-			name = Views;
-			sourceTree = "<group>";
-		};
-		E66D20B425F0575E00ED6CA0 /* ViewControllers */ = {
-			isa = PBXGroup;
-			children = (
-				E66D20AC25F0303500ED6CA0 /* VerificationFlowWebViewController.swift */,
-			);
-			name = ViewControllers;
-			sourceTree = "<group>";
-		};
-		E66D213125F18CF700ED6CA0 /* Identitity */ = {
-			isa = PBXGroup;
-			children = (
-				E66D212B25F18A1800ED6CA0 /* VerificationFlowWebViewSnapshotTests.swift */,
-			);
-			name = Identitity;
-			sourceTree = "<group>";
-		};
-		E69552CE25CCC9EA00753FDA /* iDEAL */ = {
-			isa = PBXGroup;
-			children = (
-				E69552CF25CCCA1000753FDA /* STPiDEALFormView.swift */,
-				E69552D225CCD0A300753FDA /* STPiDEALBankPickerInputField.swift */,
-			);
-			name = iDEAL;
-			sourceTree = "<group>";
-		};
 		E6A598E625F7068B003B4987 /* Identity */ = {
 			isa = PBXGroup;
 			children = (
-				E6A598E725F706A7003B4987 /* VerificationFlowWebViewTest.swift */,
-				E6A598ED25F71599003B4987 /* VerificationFlowWebViewControllerTest.swift */,
-				E6A598F325F721D3003B4987 /* VerificationClientSecretTest.swift */,
-				E6A598F925F72B7E003B4987 /* IdentityVerificationSheetTest.swift */,
-				E6E7A27B25FC65110002F914 /* VerificationSheetAnalyticsTest.swift */,
 			);
 			name = Identity;
-			sourceTree = "<group>";
-		};
-		E6CA4B3025F1C96400D8D9E8 /* MockFiles */ = {
-			isa = PBXGroup;
-			children = (
-				E6CA4B3125F1C98300D8D9E8 /* mock.html */,
-			);
-			name = MockFiles;
 			sourceTree = "<group>";
 		};
 		F148ABE21D5E80420014FD92 /* Localizations */ = {
@@ -3035,7 +2943,7 @@
 					};
 					04CDB4411A5F2E1800B854EE = {
 						CreatedOnToolsVersion = 6.1.1;
-						LastSwiftMigration = 1200;
+						LastSwiftMigration = 1310;
 					};
 				};
 			};
@@ -3874,7 +3782,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04F39F101AEF2AFE005B926E /* StripeiOS-Debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = Stripe/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_FILE = Stripe/Stripe.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.stripe.stripe-ios";
 				PRODUCT_NAME = Stripe;
@@ -3887,7 +3802,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 04F39F111AEF2AFE005B926E /* StripeiOS-Release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = Stripe/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_FILE = Stripe/Stripe.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.stripe.stripe-ios";
 				PRODUCT_NAME = Stripe;

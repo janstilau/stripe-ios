@@ -23,6 +23,7 @@ let JSONKeyObject = "object"
 class APIRequest<ResponseType: STPAPIResponseDecodable>: NSObject {
     typealias STPAPIResponseBlock = (ResponseType?, HTTPURLResponse?, Error?) -> Void
 
+    // 在这里, 发送了一个网络请求.
     class func post(
         with apiClient: STPAPIClient,
         endpoint: String,

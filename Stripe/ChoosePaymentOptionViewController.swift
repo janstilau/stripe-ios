@@ -10,6 +10,16 @@ import Foundation
 import UIKit
 @_spi(STP) import StripeCore
 
+extension UIColor {
+    
+    static var random: UIColor {
+        let red = CGFloat.random(in: 0...255.0)
+        let green = CGFloat.random(in: 0...255.0)
+        let blue = CGFloat.random(in: 0...255.0)
+        return UIColor.init(red: red, green: green, blue: blue, alpha: 1)
+    }
+}
+
 protocol ChoosePaymentOptionViewControllerDelegate: AnyObject {
     func choosePaymentOptionViewControllerShouldClose(
         _ choosePaymentOptionViewController: ChoosePaymentOptionViewController)
@@ -145,6 +155,10 @@ class ChoosePaymentOptionViewController: UIViewController {
         ])
 
         updateUI()
+        
+        self.view.subviews.forEach { aSubView in
+            aSubView.backgroundColor = UIColor.random
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

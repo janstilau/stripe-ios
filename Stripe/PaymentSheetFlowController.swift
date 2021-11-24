@@ -61,8 +61,14 @@ extension PaymentSheet {
 
         private var intent: Intent
         private let savedPaymentMethods: [STPPaymentMethod]
+        
+        /*
+            懒加载出来的一个.
+            支付意向
+         */
         private lazy var paymentOptionsViewController: ChoosePaymentOptionViewController = {
             let isApplePayEnabled = StripeAPI.deviceSupportsApplePay() && configuration.applePay != nil
+            
             let vc = ChoosePaymentOptionViewController(
                 intent: intent,
                 savedPaymentMethods: savedPaymentMethods,
@@ -146,6 +152,10 @@ extension PaymentSheet {
             configuration: PaymentSheet.Configuration,
             completion: @escaping (Result<PaymentSheet.FlowController, Error>) -> Void
         ) {
+            /*
+                使用, 支付意向, Configig 创建一个 PaymentSheet.FlowController
+                Stripe 首先, 会去读取一下用户之前的一些配置 
+             */
             PaymentSheet.load(
                 apiClient: configuration.apiClient,
                 clientSecret: clientSecret,
@@ -154,6 +164,7 @@ extension PaymentSheet {
             ) { result in
                 switch result {
                 case .success((let intent, let paymentMethods)):
+                    // 将, 支付意向, 支付方式获取完之后, 创建真正的 FlowController
                     let manualFlow = FlowController(
                         intent: intent,
                         savedPaymentMethods: paymentMethods,

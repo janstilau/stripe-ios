@@ -172,6 +172,7 @@ extension PaymentSheet {
                 intentPromise.resolve(with: .paymentIntent(paymentIntent))
             }
 
+            // 首先, 根据支付意向拿取一些东西. 
             apiClient.retrievePaymentIntentWithPreferences(withClientSecret: clientSecret) { result in
                 switch result {
                 case .success(let paymentIntent):
@@ -231,6 +232,7 @@ extension PaymentSheet {
         // List the Customer's saved PaymentMethods
         let savedPaymentMethodTypes: [STPPaymentMethodType] = [.card, .SEPADebit] // hardcoded for now
         if let customerID = customerID, let ephemeralKey = ephemeralKey {
+            // 使用, 接口获取用户之前保存的支付 Method 的信息.
             apiClient.listPaymentMethods(
                 forCustomer: customerID,
                 using: ephemeralKey,

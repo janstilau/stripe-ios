@@ -8,6 +8,9 @@
 
 import Foundation
 
+/*
+    真正的进行网络请求的代码.
+ */
 extension URLSession {
     func stp_performDataTask(with request: URLRequest,
                   completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void,
