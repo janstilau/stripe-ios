@@ -677,14 +677,14 @@
 			baseConfigurationReference = E69D641726855B9B0090B43D /* StripeiOS-Debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Y28TH9SHX7;
+				DEVELOPMENT_TEAM = GAJJ4F72ZK;
 				INFOPLIST_FILE = StripeCore/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.stripe.stripe-core";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.stripe.stripe-core.yami";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -696,14 +696,14 @@
 			baseConfigurationReference = E69D641F26855B9B0090B43D /* StripeiOS-Release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Y28TH9SHX7;
+				DEVELOPMENT_TEAM = GAJJ4F72ZK;
 				INFOPLIST_FILE = StripeCore/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.stripe.stripe-core";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.stripe.stripe-core.yami";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SWIFT_VERSION = 5.0;
 			};
