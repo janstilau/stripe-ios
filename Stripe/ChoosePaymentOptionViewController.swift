@@ -156,7 +156,7 @@ class ChoosePaymentOptionViewController: UIViewController {
 
         updateUI()
         
-        self.view.subviews.forEach { aSubView in
+        stackView.arrangedSubviews.forEach { aSubView in
             aSubView.backgroundColor = UIColor.random
         }
     }

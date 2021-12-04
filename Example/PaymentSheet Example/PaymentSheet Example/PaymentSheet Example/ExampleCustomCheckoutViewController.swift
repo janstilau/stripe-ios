@@ -63,7 +63,7 @@ class ExampleCustomCheckoutViewController: UIViewController {
 
                 // MARK: Create a PaymentSheet.FlowController instance
                 var configuration = PaymentSheet.Configuration()
-                configuration.merchantDisplayName = "Example, Inc."
+                configuration.merchantDisplayName = "Yami Food. Inc."
 //                configuration.applePay = .init(
 //                    merchantId: "com.foo.example", merchantCountryCode: "US")
                 configuration.customer =
