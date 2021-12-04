@@ -28,7 +28,7 @@ extension UIViewController: PanModalPresenter {
         return (transitioningDelegate as? PanModalPresentationDelegate) != nil
     }
     
-    /**
+    /*
      Configures a view controller for presentation using the PanModal transition
      
      - Parameters:
@@ -57,7 +57,9 @@ extension UIViewController: PanModalPresenter {
             }
         } else {
             /*
-                使用了 CustomPresent 的方式, 来对一个新的 VC 进行 Present .
+                使用了 CustomPresent 的方式, 来对一个新的 VC 进行 Present.
+                将, 使用这种特殊的 Present 的方式, 用一个特殊的方法包装起来.
+                方便, 也避免外界的误用.
              */
             viewControllerToPresent.modalPresentationStyle = .custom
             viewControllerToPresent.modalPresentationCapturesStatusBarAppearance = true

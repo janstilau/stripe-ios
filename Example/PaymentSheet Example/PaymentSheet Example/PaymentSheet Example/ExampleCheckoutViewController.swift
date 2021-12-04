@@ -73,12 +73,9 @@ class ExampleCheckoutViewController: UIViewController {
                 }
             })
         task.resume()
-        
-        self.view.subviews.forEach { aSubView in
-            aSubView.addBorderLine()
-        }
     }
 
+    
     @objc
     func didTapCheckoutButton() {
         

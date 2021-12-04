@@ -70,10 +70,7 @@ public class PaymentSheet {
     /// - Parameter completion: Called with the result of the payment after the payment sheet is dismissed
     @available(iOSApplicationExtension, unavailable)
     @available(macCatalystApplicationExtension, unavailable)
-    public func present(
-        from presentingViewController: UIViewController,
-        completion: @escaping (PaymentSheetResult) -> ()
-    ) {
+    public func present( from presentingViewController: UIViewController, completion: @escaping (PaymentSheetResult) -> () ) {
         // Overwrite completion closure to retain self until called
         let completion: (PaymentSheetResult) -> () = { status in
             // Dismiss if necessary
@@ -99,6 +96,11 @@ public class PaymentSheet {
         }
 
         // Configure the Payment Sheet VC after loading the PI/SI, Customer, etc.
+        /*
+            在这里, 使用网路接口进行数据的更新.
+            然后, 将内容填充到 PaymentSheetViewController 里面.
+            PaymentSheetViewController 的内容, 最终填充到了 bottomSheetViewController 里面 .
+         */
         PaymentSheet.load(
             apiClient: configuration.apiClient,
             clientSecret: intentClientSecret,
@@ -129,7 +131,10 @@ public class PaymentSheet {
                 completion(.failed(error: error))
             }
         }
-
+        
+        /*
+            使用特殊的方法, 弹出 bottomSheetViewController. 所以, 最终展示给用户的, 是一个 bottomSheetViewController .
+         */
         presentingViewController.presentPanModal(bottomSheetViewController)
     }
 
@@ -139,10 +144,10 @@ public class PaymentSheet {
 
     let intentClientSecret: IntentClientSecret
     var completion: ((PaymentSheetResult) -> ())?
+    
     lazy var bottomSheetViewController: BottomSheetViewController = {
-        let vc = BottomSheetViewController(
-            contentViewController: LoadingViewController(delegate: self)
-        )
+        // 真正弹出来的, 是一个 BottomSheetViewController 对象, 它用代理的方式, 将数据传递到 Self 类中.
+        let vc = BottomSheetViewController(contentViewController: LoadingViewController(delegate: self) )
         if #available(iOS 13.0, *) {
             configuration.style.configure(vc)
         }

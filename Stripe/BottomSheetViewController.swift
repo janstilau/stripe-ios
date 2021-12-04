@@ -16,7 +16,9 @@ protocol BottomSheetContentViewController: UIViewController {
     func didTapOrSwipeToDismiss()
 }
 
-/// A VC containing a content view controller and manages the layout of its SheetNavigationBar.
+/*
+    这才是一个真正的 UIViewController 对象. 
+ */
 class BottomSheetViewController: UIViewController, PanModalPresentable {
     // MARK: - Views
     private lazy var scrollView: UIScrollView = {
