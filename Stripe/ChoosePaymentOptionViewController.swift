@@ -16,7 +16,7 @@ extension UIColor {
         let red = CGFloat.random(in: 0...255.0)
         let green = CGFloat.random(in: 0...255.0)
         let blue = CGFloat.random(in: 0...255.0)
-        return UIColor.init(red: red, green: green, blue: blue, alpha: 1)
+        return UIColor.init(red: red / 255.0, green: green / 255.0, blue: blue / 255.0, alpha: 1)
     }
 }
 

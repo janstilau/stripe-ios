@@ -16,7 +16,7 @@ class DynamicHeightContainerView: UIView {
     private var pinnedDirectionConstraint: NSLayoutConstraint? = nil
     
     // MARK: - Initializers
-
+    
     required init(pinnedDirection: PinnedDirection = .bottom) {
         self.pinnedDirection = pinnedDirection
         super.init(frame: .zero)
@@ -27,7 +27,7 @@ class DynamicHeightContainerView: UIView {
     }
     
     // MARK: - Internal methods
-
+    
     /// Adds a subview and pins it to the top or bottom. It leaves the other end unpinned, thus not affecting the view's height.
     func addPinnedSubview(_ view: UIView) {
         // Add new view
@@ -41,14 +41,14 @@ class DynamicHeightContainerView: UIView {
                 return view.bottomAnchor.constraint(equalTo: bottomAnchor)
             }
         }()
-
+        
         NSLayoutConstraint.activate([
             pinnedDirectionAnchor,
             view.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
             view.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
         ])
     }
-
+    
     /// Changes the view's height to be equal to the last added subview's height.
     func updateHeight() {
         guard let mostRecentlyAddedView = subviews.last else {
@@ -56,7 +56,7 @@ class DynamicHeightContainerView: UIView {
         }
         // Deactivate old constraint
         pinnedDirectionConstraint?.isActive = false
-
+        
         // Activate the new constraint
         pinnedDirectionConstraint = {
             switch pinnedDirection {

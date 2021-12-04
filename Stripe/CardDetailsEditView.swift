@@ -15,14 +15,14 @@ class CardDetailsEditView: UIView, CardScanningViewDelegate {
     var shouldSavePaymentMethod: Bool {
         return saveThisCardCheckboxView.isEnabled && saveThisCardCheckboxView.isSelected
     }
-
+    
     let billingAddressCollection: PaymentSheet.BillingAddressCollectionLevel
     let merchantDisplayName: String
-
+    
     var paymentMethodParams: STPPaymentMethodParams? {
         return formView.cardParams
     }
-
+    
     var deviceOrientation: UIDeviceOrientation = UIDevice.current.orientation {
         didSet {
             if #available(iOS 13.0, macCatalyst 14.0, *) {
@@ -30,17 +30,17 @@ class CardDetailsEditView: UIView, CardScanningViewDelegate {
             }
         }
     }
-
+    
     func setErrorIfNecessary(for apiError: Error) -> Bool {
         return formView.markFormErrors(for: apiError)
     }
-
+    
     lazy var formView: STPCardFormView = {
         let formView = STPCardFormView(billingAddressCollection: billingAddressCollection)
         formView.internalDelegate = self
         return formView
     }()
-
+    
     lazy var saveThisCardCheckboxView: CheckboxButton = {
         let localized = STPLocalizedString(
             "Save this card for future %@ payments",
@@ -52,7 +52,7 @@ class CardDetailsEditView: UIView, CardScanningViewDelegate {
         saveThisCardCheckbox.isSelected = true
         return saveThisCardCheckbox
     }()
-
+    
     // Card scanning
     @available(iOS 13, macCatalyst 14, *)
     func cardScanningView(
@@ -68,14 +68,14 @@ class CardDetailsEditView: UIView, CardScanningViewDelegate {
                 button.alpha = 1
             }
         }
-
+        
         if let params = cardParams {
             self.formView.cardParams = STPPaymentMethodParams.init(
                 card: params, billingDetails: nil, metadata: nil)
             let _ = self.formView.nextFirstResponderField()?.becomeFirstResponder()
         }
     }
-
+    
     @available(iOS 13, macCatalyst 14, *)
     lazy var cardScanningView: CardScanningView? = {
         if !STPCardScanner.cardScanningAvailable() {
@@ -86,7 +86,10 @@ class CardDetailsEditView: UIView, CardScanningViewDelegate {
         scanningView.isHidden = true
         return scanningView
     }()
-
+    
+    /*
+     当, Scan 按钮点击之后的回调.
+     */
     weak var lastScanButton: UIButton?
     @objc func scanButtonTapped(_ button: UIButton) {
         if #available(iOS 13.0, macCatalyst 14.0, *) {
@@ -103,7 +106,7 @@ class CardDetailsEditView: UIView, CardScanningViewDelegate {
             }
         }
     }
-
+    
     init(
         shouldDisplaySaveThisPaymentMethodCheckbox: Bool,
         billingAddressCollection: PaymentSheet.BillingAddressCollectionLevel,
@@ -112,7 +115,7 @@ class CardDetailsEditView: UIView, CardScanningViewDelegate {
         self.billingAddressCollection = billingAddressCollection
         self.merchantDisplayName = merchantDisplayName
         super.init(frame: .zero)
-
+        
         var cardScanningPlaceholderView = UIView()
         // Card scanning button
         if #available(iOS 13.0, macCatalyst 14.0, *) {
@@ -122,10 +125,10 @@ class CardDetailsEditView: UIView, CardScanningViewDelegate {
             }
         }
         cardScanningPlaceholderView.isHidden = true
-
+        
         // [] Save this card
         saveThisCardCheckboxView.isHidden = !shouldDisplaySaveThisPaymentMethodCheckbox
-
+        
         let contentView = UIStackView(arrangedSubviews: [
             formView, cardScanningPlaceholderView, saveThisCardCheckboxView,
         ])
@@ -134,12 +137,12 @@ class CardDetailsEditView: UIView, CardScanningViewDelegate {
         contentView.spacing = 4
         contentView.setCustomSpacing(8, after: formView)
         contentView.setCustomSpacing(16, after: cardScanningPlaceholderView)
-
+        
         [contentView].forEach({
             addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         })
-
+        
         NSLayoutConstraint.activate([
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -147,12 +150,16 @@ class CardDetailsEditView: UIView, CardScanningViewDelegate {
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
             formView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
+        
+        contentView.arrangedSubviews.forEach { aRangedView in
+            aRangedView.backgroundColor = UIColor.random.withAlphaComponent(0.3)
+        }
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     @objc
     override var isUserInteractionEnabled: Bool {
         didSet {
@@ -177,18 +184,20 @@ extension CardDetailsEditView: EventHandler {
     }
 }
 
-/// :nodoc:
+/*
+ FormView 和外界交互的方式.
+ */
 extension CardDetailsEditView: STPFormViewInternalDelegate {
     func formView(_ form: STPFormView, didChangeToStateComplete complete: Bool) {
         delegate?.didUpdate(element: self)
     }
-
+    
     func formViewWillBecomeFirstResponder(_ form: STPFormView) {
         if #available(iOS 13, macCatalyst 14, *) {
             cardScanningView?.stop()
         }
     }
-
+    
     func formView(_ form: STPFormView, didTapAccessoryButton button: UIButton) {
         self.scanButtonTapped(button)
     }
@@ -208,7 +217,7 @@ extension CardDetailsEditView: Element {
             return nil
         }
     }
-
+    
     var view: UIView {
         return self
     }

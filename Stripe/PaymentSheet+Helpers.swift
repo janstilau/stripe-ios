@@ -11,6 +11,10 @@ import UIKit
 
 @available(iOSApplicationExtension, unavailable)
 @available(macCatalystApplicationExtension, unavailable)
+
+/*
+    
+ */
 extension PaymentSheet {
     /// Confirms a PaymentIntent with the given PaymentOption and returns a PaymentResult
     static func confirm(
@@ -56,6 +60,7 @@ extension PaymentSheet {
             }
             applePayContext.presentApplePay()
 
+            
         // MARK: New Payment Method
         case let .new(confirmParams):
             switch intent {

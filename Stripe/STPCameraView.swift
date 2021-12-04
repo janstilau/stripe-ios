@@ -12,7 +12,7 @@ import UIKit
 @available(macCatalyst 14.0, *)
 class STPCameraView: UIView {
     private var flashLayer: CALayer?
-
+    
     var captureSession: AVCaptureSession? {
         get {
             return (videoPreviewLayer.session)!
@@ -21,11 +21,11 @@ class STPCameraView: UIView {
             videoPreviewLayer.session = captureSession
         }
     }
-
+    
     var videoPreviewLayer: AVCaptureVideoPreviewLayer {
         return layer as! AVCaptureVideoPreviewLayer
     }
-
+    
     func playSnapshotAnimation() {
         CATransaction.begin()
         CATransaction.setValue(
@@ -44,7 +44,7 @@ class STPCameraView: UIView {
             self.flashLayer?.opacity = 0.0
         })
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         flashLayer = CALayer()
@@ -56,12 +56,14 @@ class STPCameraView: UIView {
         flashLayer?.opacity = 0.0
         layer.masksToBounds = true
         videoPreviewLayer.videoGravity = .resizeAspectFill
+        
+        self.backgroundColor = UIColor.red.withAlphaComponent(0.3)
     }
-
+    
     override class var layerClass: AnyClass {
         return AVCaptureVideoPreviewLayer.self
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }

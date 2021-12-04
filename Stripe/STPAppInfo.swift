@@ -8,6 +8,9 @@
 
 import Foundation
 
+/*
+    关于商家的一些信息, 在示例里面, 其实也没有专门进行设置. 
+ */
 /// Libraries wrapping the Stripe SDK should use this object to provide information about the library, and set it
 /// in on `STPAPIClient`.  This information is passed to Stripe so that we can contact you about future issues or critical updates.
 /// - seealso: https://stripe.com/docs/building-plugins#setappinfo

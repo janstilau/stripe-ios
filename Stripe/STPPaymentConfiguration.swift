@@ -15,26 +15,29 @@ import Foundation
 /// when making a charge. The configuration generally has settings that
 /// will not change from payment to payment and thus is reusable, while the context
 /// is specific to a single particular payment instance.
+///
+// 对于, Config 来说, 他就是一个纯数据类.
+// 真正的逻辑, 是在 Controller 类里面. 
 public class STPPaymentConfiguration: NSObject, NSCopying {
     /// This is a convenience singleton configuration that uses the default values for
     /// every property
     @objc(sharedConfiguration) public static var shared = STPPaymentConfiguration()
-
+    
     private var _applePayEnabled = true
     /// The user is allowed to pay with Apple Pay if it's configured and available on their device.
     @objc public var applePayEnabled: Bool {
         get {
-            return appleMerchantIdentifier != nil && _applePayEnabled
-                && StripeAPI.deviceSupportsApplePay()
+            return appleMerchantIdentifier != nil &&
+            _applePayEnabled && StripeAPI.deviceSupportsApplePay()
         }
         set {
             _applePayEnabled = newValue
         }
     }
-
+    
     /// The user is allowed to pay with FPX.
     @objc public var fpxEnabled = false
-
+    
     /// The billing address fields the user must fill out when prompted for their
     /// payment details. These fields will all be present on the returned PaymentMethod from
     /// Stripe.
@@ -58,7 +61,7 @@ public class STPPaymentConfiguration: NSObject, NSCopying {
     /// The default value is all known countries. Setting this property will limit
     /// the available countries to your selected set.
     @objc public var availableCountries: Set<String> = Set<String>(NSLocale.isoCountryCodes)
-
+    
     /// The name of your company, for displaying to the user during payment flows. For
     /// example, when using Apple Pay, the payment sheet's final line item will read
     /// "PAY {companyName}".
@@ -88,23 +91,23 @@ public class STPPaymentConfiguration: NSObject, NSCopying {
     /// The default value is currently NO. This will be changed in a future update.
     @objc public var cardScanningEnabled = false
     // MARK: - Deprecated
-
+    
     /// An enum value representing which payment options you will accept from your user
     /// in addition to credit cards.
     @available(
         *, deprecated,
-        message:
+         message:
             "additionalPaymentOptions has been removed. Set applePayEnabled and fpxEnabled on STPPaymentConfiguration instead."
     )
     @objc public var additionalPaymentOptions: Int = 0
-
+    
     private var _publishableKey: String?
     /// If you used STPPaymentConfiguration.shared.publishableKey, use STPAPIClient.shared.publishableKey instead.  The SDK uses STPAPIClient.shared to make API requests by default.
     /// Your Stripe publishable key
     /// - seealso: https://dashboard.stripe.com/account/apikeys
     @available(
         *, deprecated,
-        message:
+         message:
             "If you used STPPaymentConfiguration.shared.publishableKey, use STPAPIClient.shared.publishableKey instead. If you passed a STPPaymentConfiguration instance to an SDK component, create an STPAPIClient, set publishableKey on it, and set the SDK component's APIClient property."
     )
     @objc public var publishableKey: String? {
@@ -122,7 +125,7 @@ public class STPPaymentConfiguration: NSObject, NSCopying {
             }
         }
     }
-
+    
     private var _stripeAccount: String?
     /// If you used STPPaymentConfiguration.shared.stripeAccount, use STPAPIClient.shared.stripeAccount instead.  The SDK uses STPAPIClient.shared to make API requests by default.
     /// In order to perform API requests on behalf of a connected account, e.g. to
@@ -131,7 +134,7 @@ public class STPPaymentConfiguration: NSObject, NSCopying {
     /// - seealso: https://stripe.com/docs/payments/payment-intents/use-cases#connected-accounts
     @available(
         *, deprecated,
-        message:
+         message:
             "If you used STPPaymentConfiguration.shared.stripeAccount, use STPAPIClient.shared.stripeAccount instead. If you passed a STPPaymentConfiguration instance to an SDK component, create an STPAPIClient, set stripeAccount on it, and set the SDK component's APIClient property."
     )
     @objc public var stripeAccount: String? {
@@ -149,75 +152,13 @@ public class STPPaymentConfiguration: NSObject, NSCopying {
             }
         }
     }
-
-    // MARK: - Description
-    /// :nodoc:
+    
+    // 删了具体的实现, 总之就是, 按照类自己的风格, 打印自己的成员变量
     @objc public override var description: String {
-        var additionalPaymentOptionsDescription: String?
-
-        var paymentOptions: [String] = []
-
-        if _applePayEnabled {
-            paymentOptions.append("STPPaymentOptionTypeApplePay")
-        }
-
-        if fpxEnabled {
-            paymentOptions.append("STPPaymentOptionTypeFPX")
-        }
-
-        additionalPaymentOptionsDescription = paymentOptions.joined(separator: "|")
-
-        var requiredBillingAddressFieldsDescription: String?
-
-        switch requiredBillingAddressFields {
-        case .none:
-            requiredBillingAddressFieldsDescription = "STPBillingAddressFieldsNone"
-        case .postalCode:
-            requiredBillingAddressFieldsDescription = "STPBillingAddressFieldsPostalCode"
-        case .full:
-            requiredBillingAddressFieldsDescription = "STPBillingAddressFieldsFull"
-        case .name:
-            requiredBillingAddressFieldsDescription = "STPBillingAddressFieldsName"
-        default:
-            break
-        }
-
-        let requiredShippingAddressFieldsDescription = requiredShippingAddressFields?.map({
-            $0.rawValue
-        }).joined(separator: "|")
-
-        var shippingTypeDescription: String?
-
-        switch shippingType {
-        case .shipping:
-            shippingTypeDescription = "STPShippingTypeShipping"
-        case .delivery:
-            shippingTypeDescription = "STPShippingTypeDelivery"
-        }
-
-        let props = [
-            // Object
-            String(format: "%@: %p", NSStringFromClass(STPPaymentConfiguration.self), self),
-            // Basic configuration
-            "additionalPaymentOptions = \(additionalPaymentOptionsDescription ?? "")",
-            // Billing and shipping
-            "requiredBillingAddressFields = \(requiredBillingAddressFieldsDescription ?? "")",
-            "requiredShippingAddressFields = \(requiredShippingAddressFieldsDescription ?? "")",
-            "verifyPrefilledShippingAddress = \((verifyPrefilledShippingAddress) ? "YES" : "NO")",
-            "shippingType = \(shippingTypeDescription ?? "")",
-            "availableCountries = \(availableCountries )",
-            // Additional configuration
-            "companyName = \(companyName )",
-            "appleMerchantIdentifier = \(appleMerchantIdentifier ?? "")",
-            "canDeletePaymentOptions = \((canDeletePaymentOptions) ? "YES" : "NO")",
-            "cardScanningEnabled = \((cardScanningEnabled) ? "YES" : "NO")",
-        ]
-
-        return "<\(props.joined(separator: "; "))>"
+        return ""
     }
-
-    // MARK: - NSCopying
-    /// :nodoc:
+    
+    // 对于一个引用语义的对象来说, 想要达到值语义的效果, 一定要明显的写出 Copy 函数出来.
     @objc
     public func copy(with zone: NSZone? = nil) -> Any {
         let copy = STPPaymentConfiguration()

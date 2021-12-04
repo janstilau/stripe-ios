@@ -1,11 +1,3 @@
-//
-//  PaymentSheet.swift
-//  Stripe
-//
-//  Created by Yuki Tokuhiro on 9/3/20.
-//  Copyright © 2020 Stripe, Inc. All rights reserved.
-//
-
 import Foundation
 import UIKit
 import PassKit
@@ -20,10 +12,10 @@ import PassKit
     /// fulfill the order (e.g. ship the product to the customer) after receiving a successful payment event from Stripe -
     /// see https://stripe.com/docs/payments/handling-payment-events
     case completed
-
+    
     /// The customer canceled the payment or setup attempt
     case canceled
-
+    
     /// The attempt failed.
     /// - Parameter error: The error encountered by the customer. You can display its `localizedDescription` to the customer.
     case failed(error: Error)
@@ -33,10 +25,10 @@ import PassKit
 public class PaymentSheet {
     /// This contains all configurable properties of PaymentSheet
     public let configuration: Configuration
-
+    
     /// The most recent error encountered by the customer, if any.
     public private(set) var mostRecentError: Error?
-
+    
     /// Initializes a PaymentSheet
     /// - Parameter paymentIntentClientSecret: The [client secret](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-client_secret) of a Stripe PaymentIntent object
     /// - Note: This can be used to complete a payment - don't log it, store it, or expose it to anyone other than the customer.
@@ -47,7 +39,7 @@ public class PaymentSheet {
             configuration: configuration
         )
     }
-
+    
     /// Initializes a PaymentSheet
     /// - Parameter setupIntentClientSecret: The [client secret](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-client_secret) of a Stripe SetupIntent object
     /// - Parameter configuration: Configuration for the PaymentSheet. e.g. your business name, Customer details, etc.
@@ -57,14 +49,14 @@ public class PaymentSheet {
             configuration: configuration
         )
     }
-
+    
     required init(intentClientSecret: IntentClientSecret, configuration: Configuration) {
         STPAnalyticsClient.sharedClient.addClass(toProductUsageIfNecessary: PaymentSheet.self)
         self.intentClientSecret = intentClientSecret
         self.configuration = configuration
         STPAnalyticsClient.sharedClient.logPaymentSheetInitialized(configuration: configuration)
     }
-
+    
     /// Presents a sheet for a customer to complete their payment
     /// - Parameter presentingViewController: The view controller to present a payment sheet
     /// - Parameter completion: Called with the result of the payment after the payment sheet is dismissed
@@ -84,7 +76,7 @@ public class PaymentSheet {
             self.completion = nil
         }
         self.completion = completion
-
+        
         // Guard against basic user error
         guard presentingViewController.presentedViewController == nil else {
             assertionFailure("presentingViewController is already presenting a view controller")
@@ -94,12 +86,12 @@ public class PaymentSheet {
             completion(.failed(error: error))
             return
         }
-
+        
         // Configure the Payment Sheet VC after loading the PI/SI, Customer, etc.
         /*
-            在这里, 使用网路接口进行数据的更新.
-            然后, 将内容填充到 PaymentSheetViewController 里面.
-            PaymentSheetViewController 的内容, 最终填充到了 bottomSheetViewController 里面 .
+         在这里, 使用网路接口进行数据的更新.
+         然后, 将内容填充到 PaymentSheetViewController 里面.
+         PaymentSheetViewController 的内容, 最终填充到了 bottomSheetViewController 里面 .
          */
         PaymentSheet.load(
             apiClient: configuration.apiClient,
@@ -119,13 +111,13 @@ public class PaymentSheet {
                     delegate: self
                 )
                 // Workaround to silence a warning in the Catalyst target
-                #if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst)
                 self.configuration.style.configure(paymentSheetVC)
-                #else
+#else
                 if #available(iOS 13.0, *) {
                     self.configuration.style.configure(paymentSheetVC)
                 }
-                #endif
+#endif
                 self.bottomSheetViewController.contentStack = [paymentSheetVC]
             case .failure(let error):
                 completion(.failed(error: error))
@@ -133,15 +125,15 @@ public class PaymentSheet {
         }
         
         /*
-            使用特殊的方法, 弹出 bottomSheetViewController. 所以, 最终展示给用户的, 是一个 bottomSheetViewController .
+         使用特殊的方法, 弹出 bottomSheetViewController. 所以, 最终展示给用户的, 是一个 bottomSheetViewController .
          */
         presentingViewController.presentPanModal(bottomSheetViewController)
     }
-
+    
     // MARK: - Internal Properties
     /// An unordered list of paymentMethod types that can be used with PaymentSheet
     static let supportedPaymentMethods: [STPPaymentMethodType] = [.card, .iDEAL]
-
+    
     let intentClientSecret: IntentClientSecret
     var completion: ((PaymentSheetResult) -> ())?
     
@@ -153,7 +145,7 @@ public class PaymentSheet {
         }
         return vc
     }()
-
+    
 }
 
 @available(iOSApplicationExtension, unavailable)
@@ -178,7 +170,7 @@ extension PaymentSheet: PaymentSheetViewControllerDelegate {
                 completion(result)
             }
         }
-
+        
         if case .applePay = paymentOption {
             // Don't present the Apple Pay sheet on top of the Payment Sheet
             paymentSheetViewController.dismiss(animated: true) {
@@ -198,13 +190,13 @@ extension PaymentSheet: PaymentSheetViewControllerDelegate {
             }
         }
     }
-
+    
     func paymentSheetViewControllerDidFinish(_ paymentSheetViewController: PaymentSheetViewController, result: PaymentSheetResult) {
         paymentSheetViewController.dismiss(animated: true) {
             self.completion?(result)
         }
     }
-
+    
     func paymentSheetViewControllerDidCancel(_ paymentSheetViewController: PaymentSheetViewController) {
         paymentSheetViewController.dismiss(animated: true) {
             self.completion?(.canceled)

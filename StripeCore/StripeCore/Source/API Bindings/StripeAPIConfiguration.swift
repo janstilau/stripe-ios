@@ -11,6 +11,6 @@ import Foundation
 /// Shared configurations across all Stripe frameworks.
 @_spi(STP) public struct StripeAPIConfiguration {
 
+    // 直接就是 Defualt.
     public static let sharedUrlSessionConfiguration = URLSessionConfiguration.default
-
 }

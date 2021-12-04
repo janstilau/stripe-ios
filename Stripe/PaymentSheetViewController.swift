@@ -60,18 +60,24 @@ class PaymentSheetViewController: UIViewController {
                 return false
             }
         }()
-        return AddPaymentMethodViewController(
+        let addPay =
+        AddPaymentMethodViewController(
             intent: intent,
             configuration: configuration,
             delegate: self)
+        addPay.view.layer.borderColor = UIColor.yellow.cgColor
+        addPay.view.layer.borderWidth = 2
+        return addPay
     }()
     private lazy var savedPaymentOptionsViewController: SavedPaymentOptionsViewController = {
-        return SavedPaymentOptionsViewController(
+        let savedPay = SavedPaymentOptionsViewController(
             savedPaymentMethods: savedPaymentMethods,
             customerID: configuration.customer?.id,
             isApplePayEnabled: isApplePayEnabled,
             delegate: self)
-        
+        savedPay.view.layer.borderColor = UIColor.blue.cgColor
+        savedPay.view.layer.borderWidth = 2
+        return savedPay
     }()
     internal lazy var navigationBar: SheetNavigationBar = {
         let navBar = SheetNavigationBar()
@@ -141,11 +147,6 @@ class PaymentSheetViewController: UIViewController {
         
         // One stack view contains all our subviews
         
-        [ headerLabel, applePayHeader, paymentContainerView, errorLabel, buyButton ].forEach { aView in
-            aView.layer.borderWidth = 1
-            aView.layer.borderColor = UIColor.random.cgColor
-        }
-        
         let stackView = UIStackView(arrangedSubviews: [
             headerLabel, applePayHeader, paymentContainerView, errorLabel, buyButton,
         ])
@@ -176,8 +177,10 @@ class PaymentSheetViewController: UIViewController {
         
         updateUI(animated: false)
         
-        self.view.layer.borderWidth = 1
-        self.view.layer.borderColor = UIColor.red.cgColor
+        [ headerLabel, applePayHeader, paymentContainerView, errorLabel, buyButton ].forEach { aView in
+            aView.layer.borderWidth = 1
+            aView.layer.borderColor = UIColor.random.cgColor
+        }
     }
     
     // MARK: Private Methods
@@ -258,10 +261,9 @@ class PaymentSheetViewController: UIViewController {
         )
         
         // Content
-        switchContentIfNecessary(
-            to: mode == .selectingSaved
-            ? savedPaymentOptionsViewController : addPaymentMethodViewController,
-            containerView: paymentContainerView
+        switchContentIfNecessary( to: mode == .selectingSaved ?
+                                  savedPaymentOptionsViewController : addPaymentMethodViewController,
+                                  containerView: paymentContainerView
         )
         
         // Error
@@ -329,6 +331,9 @@ class PaymentSheetViewController: UIViewController {
         }
     }
     
+    /*
+        当, 点击支付之后, 真正会走的处理逻辑 .
+     */
     private func pay(with paymentOption: PaymentOption) {
         view.endEditing(true)
         isPaymentInFlight = true
@@ -344,9 +349,6 @@ class PaymentSheetViewController: UIViewController {
             DispatchQueue.main.asyncAfter(
                 deadline: .now() + max(PaymentSheetUI.minimumFlightTime - elapsedTime, 0)
             ) {
-                STPAnalyticsClient.sharedClient.logPaymentSheetPayment(isCustom: false,
-                                                                       paymentMethod: paymentOption.analyticsValue,
-                                                                       result: result)
                 self.isPaymentInFlight = false
                 switch result {
                 case .canceled:

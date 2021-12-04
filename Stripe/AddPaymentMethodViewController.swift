@@ -16,17 +16,24 @@ protocol AddPaymentMethodViewControllerDelegate: AnyObject {
 /// This displays:
 /// - A carousel of Payment Method types
 /// - Input fields for the selected Payment Method type
+
+/*
+    增加支付方式的 VC.
+ */
 class AddPaymentMethodViewController: UIViewController {
     // MARK: - Read-only Properties
     weak var delegate: AddPaymentMethodViewControllerDelegate?
+    
     lazy var paymentMethodTypes: [STPPaymentMethodType] = {
         return intent.orderedPaymentMethodTypes.filter {
             PaymentSheet.supportsAdding(paymentMethod: $0, with: configuration)
         }
     }()
+    
     var selectedPaymentMethodType: STPPaymentMethodType {
         return paymentMethodTypesView.selected
     }
+    
     var paymentOption: PaymentOption? {
         if let params = paymentMethodFormElement.updateParams(
             params: IntentConfirmParams(type: selectedPaymentMethodType)
@@ -100,6 +107,7 @@ class AddPaymentMethodViewController: UIViewController {
             paymentMethodTypesView.isHidden = false
         }
         updateUI()
+        
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -114,7 +122,6 @@ class AddPaymentMethodViewController: UIViewController {
     
     /// Returns true iff we could map the error to one of the displayed fields
     func setErrorIfNecessary(for error: Error?) -> Bool {
-        // TODO
         return false
     }
 

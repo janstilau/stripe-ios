@@ -98,6 +98,9 @@ class STPInputTextField: STPFloatingPlaceholderTextField, STPFormInputValidation
                     from: updatedCursorPosition, to: updatedCursorPosition)
             }
         }
+        /*
+            当, TextField 变化之后, 会调用 Validator 的接口进行验证. 
+         */
         validator.inputValue = formatted.string
     }
 

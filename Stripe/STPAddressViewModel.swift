@@ -21,7 +21,7 @@ protocol STPAddressViewModelDelegate: AnyObject {
 class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
     private(set) var addressCells: [STPAddressFieldTableViewCell] = []
     weak var delegate: STPAddressViewModelDelegate?
-
+    
     var addressFieldTableViewCountryCode: String? = Locale.autoupdatingCurrent.regionCode {
         didSet {
             updatePostalCodeCellIfNecessary()
@@ -32,12 +32,12 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
             }
         }
     }
-
+    
     var address: STPAddress {
         get {
             let address = STPAddress()
             for cell in addressCells {
-
+                
                 switch cell.type {
                 case .name:
                     address.name = cell.contents
@@ -68,7 +68,7 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
             if let country = address.country {
                 addressFieldTableViewCountryCode = country
             }
-
+            
             for cell in addressCells {
                 switch cell.type {
                 case .name:
@@ -93,10 +93,10 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
             }
         }
     }
-
+    
     /* The default value of availableCountries is nil, which will allow all known countries. */
     var availableCountries: Set<String>?
-
+    
     var isValid: Bool {
         if isBillingAddress {
             if requiredBillingAddressFields == .postalCode {
@@ -104,7 +104,7 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
             } else {
                 return address.containsRequiredFields(requiredBillingAddressFields)
             }
-
+            
         } else {
             if let requiredShippingAddressFields = requiredShippingAddressFields {
                 return address.containsRequiredShippingAddressFields(requiredShippingAddressFields)
@@ -112,7 +112,7 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
             return false
         }
     }
-
+    
     // The default value of availableCountries is nil, which will allow all known countries.
     init(
         requiredBillingFields requiredBillingAddressFields: STPBillingAddressFields,
@@ -153,7 +153,7 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
         }
         commonInit()
     }
-
+    
     init(
         requiredShippingFields requiredShippingAddressFields: Set<STPContactField>,
         availableCountries: Set<String>? = nil
@@ -162,7 +162,7 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
         self.availableCountries = availableCountries
         self.requiredShippingAddressFields = requiredShippingAddressFields
         var cells: [STPAddressFieldTableViewCell] = []
-
+        
         if requiredShippingAddressFields.contains(STPContactField.name) {
             cells.append(
                 STPAddressFieldTableViewCell(
@@ -206,39 +206,39 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
         addressCells = cells
         commonInit()
     }
-
+    
     private func cell(at index: Int) -> STPAddressFieldTableViewCell? {
         guard index > 0,
-            index < addressCells.count
+              index < addressCells.count
         else {
             return nil
         }
         return addressCells[index]
     }
-
+    
     private var isBillingAddress = false
     private var requiredBillingAddressFields: STPBillingAddressFields = .none
     private var requiredShippingAddressFields: Set<STPContactField>?
     private var showingPostalCodeCell = false
     private var geocodeInProgress = false
-
+    
     private func commonInit() {
         if let countryCode = Locale.autoupdatingCurrent.regionCode {
             addressFieldTableViewCountryCode = countryCode
         }
         updatePostalCodeCellIfNecessary()
     }
-
+    
     private func updatePostalCodeCellIfNecessary() {
         delegate?.addressViewModelWillUpdate(self)
         let shouldBeShowingPostalCode = STPPostalCodeValidator.postalCodeIsRequired(
             forCountryCode: addressFieldTableViewCountryCode)
-
+        
         if shouldBeShowingPostalCode && !showingPostalCodeCell {
             if containsStateAndPostalFields() {
                 // Add before city
                 let zipFieldIndex = addressCells.firstIndex(where: { $0.type == .city }) ?? 0
-
+                
                 var mutableAddressCells = addressCells
                 mutableAddressCells.insert(
                     STPAddressFieldTableViewCell(
@@ -251,7 +251,7 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
         } else if !shouldBeShowingPostalCode && showingPostalCodeCell {
             if containsStateAndPostalFields() {
                 if let zipFieldIndex = addressCells.firstIndex(where: { $0.type == .zip }) {
-
+                    
                     var mutableAddressCells = addressCells
                     mutableAddressCells.remove(at: zipFieldIndex)
                     addressCells = mutableAddressCells
@@ -263,7 +263,7 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
         showingPostalCodeCell = shouldBeShowingPostalCode
         delegate?.addressViewModelDidUpdate(self)
     }
-
+    
     private func containsStateAndPostalFields() -> Bool {
         if isBillingAddress {
             return requiredBillingAddressFields == .full
@@ -271,17 +271,17 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
             return requiredShippingAddressFields?.contains(.postalAddress) ?? false
         }
     }
-
+    
     func updateCityAndState(fromZipCodeCell zipCell: STPAddressFieldTableViewCell?) {
-
+        
         let zipCode = zipCell?.contents
-
+        
         if geocodeInProgress || zipCode == nil || !(zipCell?.textField.validText ?? false)
             || !(addressFieldTableViewCountryCode == "US")
         {
             return
         }
-
+        
         var cityCell: STPAddressFieldTableViewCell?
         var stateCell: STPAddressFieldTableViewCell?
         for cell in addressCells {
@@ -291,7 +291,7 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
                 stateCell = cell
             }
         }
-
+        
         if (cityCell == nil && stateCell == nil)
             || ((cityCell?.contents?.count ?? 0) > 0 || (stateCell?.contents?.count ?? 0) > 0)
         {
@@ -301,7 +301,7 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
         } else {
             geocodeInProgress = true
             let geocoder = CLGeocoder()
-
+            
             let onCompletion: CLGeocodeCompletionHandler = { placemarks, error in
                 stpDispatchToMainThreadIfNecessary({
                     if (placemarks?.count ?? 0) > 0 && error == nil {
@@ -319,39 +319,39 @@ class STPAddressViewModel: STPAddressFieldTableViewCellDelegate {
                     self.geocodeInProgress = false
                 })
             }
-
+            
             let address = CNMutablePostalAddress()
             address.postalCode = zipCode ?? ""
             address.isoCountryCode = addressFieldTableViewCountryCode ?? ""
-
+            
             geocoder.geocodePostalAddress(
                 address,
                 completionHandler: onCompletion)
         }
     }
-
+    
     private func cell(after cell: STPAddressFieldTableViewCell?) -> STPAddressFieldTableViewCell? {
         guard let cell = cell,
-            let cellIndex = addressCells.firstIndex(of: cell),
-            cellIndex + 1 < addressCells.count
+              let cellIndex = addressCells.firstIndex(of: cell),
+              cellIndex + 1 < addressCells.count
         else {
             return nil
         }
         return addressCells[cellIndex + 1]
     }
-
+    
     func addressFieldTableViewCellDidUpdateText(_ cell: STPAddressFieldTableViewCell) {
         delegate?.addressViewModelDidChange(self)
     }
-
+    
     func addressFieldTableViewCellDidReturn(_ cell: STPAddressFieldTableViewCell) {
         _ = self.cell(after: cell)?.becomeFirstResponder()
     }
-
+    
     func addressFieldTableViewCellDidEndEditing(_ cell: STPAddressFieldTableViewCell) {
         if cell.type == .zip {
             updateCityAndState(fromZipCodeCell: cell)
         }
     }
-
+    
 }

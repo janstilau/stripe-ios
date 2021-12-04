@@ -27,6 +27,9 @@ class STPInputTextFieldValidator: NSObject {
         return nil
     }
 
+    /*
+        iOS 里面的监听者模式, 就是用 NSHashTable 这种数据结构来完成.
+     */
     var observersHash = NSHashTable<AnyObject>.weakObjects()
 
     weak var textField: STPInputTextField?
@@ -49,6 +52,9 @@ class STPInputTextFieldValidator: NSObject {
         observersHash.remove(validationObserver)
     }
 
+    /*
+        
+     */
     func updateObservers(with state: STPValidatedInputState, previous: STPValidatedInputState) {
         guard let textField = textField,
             observersHash.count > 0

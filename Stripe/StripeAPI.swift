@@ -1,11 +1,3 @@
-//
-//  StripeAPI.swift
-//  StripeiOS
-//
-//  Created by Yuki Tokuhiro on 9/22/20.
-//  Copyright © 2020 Stripe, Inc. All rights reserved.
-//
-
 import Foundation
 import PassKit
 
@@ -16,7 +8,7 @@ public class StripeAPI: NSObject {
     /// New instances of STPAPIClient will be initialized with this value.
     /// @warning Make sure not to ship your test API keys to the App Store! This will log a warning if you use your test key in a release build.
     @objc public static var defaultPublishableKey: String?
-
+    
     /// Set this to your Stripe publishable API key, obtained from https://dashboard.stripe.com/apikeys.
     /// Set this as early as possible in your application's lifecycle, preferably in your AppDelegate or SceneDelegate.
     /// New instances of STPAPIClient will be initialized with this value.
@@ -24,22 +16,22 @@ public class StripeAPI: NSObject {
     public func setDefaultPublishableKey(_ publishableKey: String) {
         StripeAPI.defaultPublishableKey = publishableKey
     }
-
+    
     /// A Boolean value that determines whether additional device data is sent to Stripe for fraud prevention.
     /// If YES, additional device signals will be sent to Stripe.
     /// For more details on the information we collect, visit https://stripe.com/docs/disputes/prevention/advanced-fraud-detection
     /// Disabling this setting will reduce Stripe's ability to protect your business from fraudulent payments.
     /// The default value is YES.
     @objc public static var advancedFraudSignalsEnabled: Bool = true
-
+    
     /// If the SDK receives a "Too Many Requests" (429) status code from Stripe,
     /// it will automatically retry the request.
     /// The default value is 3.
     /// See https://stripe.com/docs/rate-limits for more information.
     @objc public static var maxRetries = 3
-
+    
     // MARK: - Apple Pay
-
+    
     /// Japanese users can enable JCB for Apple Pay by setting this to `YES`, after they have been approved by JCB.
     /// The default value is NO.
     /// @note JCB is only supported on iOS 10.1+
@@ -57,7 +49,7 @@ public class StripeAPI: NSObject {
                     && !self.additionalEnabledApplePayNetworks.contains(.JCB)
                 {
                     self.additionalEnabledApplePayNetworks =
-                        self.additionalEnabledApplePayNetworks + [PKPaymentNetwork.JCB]
+                    self.additionalEnabledApplePayNetworks + [PKPaymentNetwork.JCB]
                 } else if !JCBPaymentNetworkSupported {
                     var updatedNetworks = self.additionalEnabledApplePayNetworks
                     updatedNetworks.removeAll {
@@ -72,7 +64,7 @@ public class StripeAPI: NSObject {
     /// Set this property to enable other card networks in addition to these.
     /// For example, `additionalEnabledApplePayNetworks = [.JCB]` enables JCB (note this requires onboarding from JCB and Stripe).
     @objc public static var additionalEnabledApplePayNetworks: [PKPaymentNetwork] = []
-
+    
     /// Whether or not this device is capable of using Apple Pay. This checks both
     /// whether the device supports Apple Pay, as well as whether or not they have
     /// stored Apple Pay cards on their device.
@@ -95,7 +87,7 @@ public class StripeAPI: NSObject {
             return paymentRequest.paymentSummaryItems.last?.amount.floatValue ?? 0.0 > 0
         }
     }
-
+    
     @objc class func supportedPKPaymentNetworks() -> [PKPaymentNetwork] {
         var additionalOSSupportedNetworks: [PKPaymentNetwork] = []
         if #available(iOS 12.0, *) {
@@ -108,7 +100,7 @@ public class StripeAPI: NSObject {
             .discover,
         ] + additionalEnabledApplePayNetworks + additionalOSSupportedNetworks
     }
-
+    
     /// Whether or not this can make Apple Pay payments via a card network supported
     /// by Stripe.
     /// The Stripe supported Apple Pay card networks are:
@@ -122,7 +114,7 @@ public class StripeAPI: NSObject {
         return PKPaymentAuthorizationController.canMakePayments(
             usingNetworks: self.supportedPKPaymentNetworks())
     }
-
+    
     /// A convenience method to build a `PKPaymentRequest` with sane default values.
     /// You will still need to configure the `paymentSummaryItems` property to indicate
     /// what the user is purchasing, as well as the optional `requiredShippingAddressFields`,
@@ -137,16 +129,16 @@ public class StripeAPI: NSObject {
     /// the appropriate values for your business.
     @available(
         *, deprecated,
-        message: "Use `paymentRequestWithMerchantIdentifier:country:currency:` instead."
+         message: "Use `paymentRequestWithMerchantIdentifier:country:currency:` instead."
     )
     @objc
     public class func paymentRequest(withMerchantIdentifier merchantIdentifier: String)
-        -> PKPaymentRequest
+    -> PKPaymentRequest
     {
         return self.paymentRequest(
             withMerchantIdentifier: merchantIdentifier, country: "US", currency: "USD")
     }
-
+    
     /// A convenience method to build a `PKPaymentRequest` with sane default values.
     /// You will still need to configure the `paymentSummaryItems` property to indicate
     /// what the user is purchasing, as well as the optional `requiredShippingContactFields`,
@@ -175,9 +167,9 @@ public class StripeAPI: NSObject {
         paymentRequest.requiredBillingContactFields = Set([.postalAddress])
         return paymentRequest
     }
-
+    
     // MARK: - URL callbacks
-
+    
     /// Call this method in your app delegate whenever you receive an URL in your
     /// app delegate for a Stripe callback.
     /// For convenience, you can pass all URL's you receive in your app delegate
@@ -195,112 +187,4 @@ public class StripeAPI: NSObject {
     ) -> Bool {
         return STPURLCallbackHandler.shared().handleURLCallback(url)
     }
-}
-
-// MARK: Deprecated top-level Stripe functions.
-// These are included so Xcode can offer guidance on how to replace top-level Stripe usage.
-
-/// :nodoc:
-@available(
-    *, deprecated,
-    message:
-        "Use StripeAPI.defaultPublishableKey instead. (StripeAPI.defaultPublishableKey = \"pk_12345_xyzabc\")"
-)
-public func setDefaultPublishableKey(_ publishableKey: String) {
-    StripeAPI.defaultPublishableKey = publishableKey
-}
-
-/// :nodoc:
-@available(
-    *, deprecated,
-    message: "Use StripeAPI.advancedFraudSignalsEnabled instead."
-)
-public var advancedFraudSignalsEnabled: Bool {
-    get {
-        StripeAPI.advancedFraudSignalsEnabled
-    }
-    set {
-        StripeAPI.advancedFraudSignalsEnabled = newValue
-    }
-}
-
-/// :nodoc:
-@available(
-    *, deprecated,
-    message: "Use StripeAPI.jcbPaymentNetworkSupported instead."
-)
-public var jcbPaymentNetworkSupported: Bool {
-    get {
-        StripeAPI.jcbPaymentNetworkSupported
-    }
-    set {
-        StripeAPI.jcbPaymentNetworkSupported = newValue
-    }
-}
-
-/// :nodoc:
-@available(
-    *, deprecated,
-    message: "Use StripeAPI.additionalEnabledApplePayNetworks instead."
-)
-public var additionalEnabledApplePayNetworks: [PKPaymentNetwork] {
-    get {
-        StripeAPI.additionalEnabledApplePayNetworks
-    }
-    set {
-        StripeAPI.additionalEnabledApplePayNetworks = newValue
-    }
-}
-
-/// :nodoc:
-@available(
-    *, deprecated,
-    message: "Use StripeAPI.canSubmitPaymentRequest(_:) instead."
-)
-public func canSubmitPaymentRequest(_ paymentRequest: PKPaymentRequest) -> Bool {
-    return StripeAPI.canSubmitPaymentRequest(paymentRequest)
-}
-
-/// :nodoc:
-@available(
-    *, deprecated,
-    message: "Use StripeAPI.deviceSupportsApplePay() instead."
-)
-public func deviceSupportsApplePay() -> Bool {
-    return StripeAPI.deviceSupportsApplePay()
-}
-
-/// :nodoc:
-@available(
-    *, deprecated,
-    message: "Use StripeAPI.paymentRequest(withMerchantIdentifier:country:currency:) instead."
-)
-public func paymentRequest(
-    withMerchantIdentifier merchantIdentifier: String,
-    country countryCode: String,
-    currency currencyCode: String
-) -> PKPaymentRequest {
-    return StripeAPI.paymentRequest(
-        withMerchantIdentifier: merchantIdentifier, country: countryCode, currency: currencyCode)
-}
-
-/// :nodoc:
-@available(
-    *, deprecated,
-    message: "Use StripeAPI.paymentRequest(withMerchantIdentifier:country:currency:) instead."
-)
-func paymentRequest(withMerchantIdentifier merchantIdentifier: String)
-    -> PKPaymentRequest
-{
-    return StripeAPI.paymentRequest(
-        withMerchantIdentifier: merchantIdentifier, country: "US", currency: "USD")
-}
-
-/// :nodoc:
-@available(
-    *, deprecated,
-    message: "Use StripeAPI.handleURLCallback(with:) instead."
-)
-public func handleURLCallback(with url: URL) -> Bool {
-    return StripeAPI.handleURLCallback(with: url)
 }
