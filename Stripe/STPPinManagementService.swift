@@ -14,7 +14,7 @@ public class STPPinManagementService: NSObject {
     /// The API Client to use to make requests.
     /// Defaults to STPAPIClient.shared
     @objc public var apiClient: STPAPIClient = STPAPIClient.shared
-
+    
     /// Create a STPPinManagementService, you must provide an implementation of STPIssuingCardEphemeralKeyProvider
     @objc
     public init(keyProvider: STPIssuingCardEphemeralKeyProvider) {
@@ -23,7 +23,7 @@ public class STPPinManagementService: NSObject {
             keyProvider: keyProvider as Any, apiVersion: STPAPIClient.apiVersion,
             performsEagerFetching: false)
     }
-
+    
     /// Retrieves a PIN number for a given card,
     /// this call is asynchronous, implement the completion block to receive the updates
     @objc
@@ -45,7 +45,7 @@ public class STPPinManagementService: NSObject {
                 completion(nil, .ephemeralKeyError, keyError)
                 return
             }
-
+            
             if let ephemeralKey = ephemeralKey {
                 APIRequest<STPIssuingCardPin>.getWith(
                     self.apiClient,
@@ -76,7 +76,7 @@ public class STPPinManagementService: NSObject {
             }
         })
     }
-
+    
     /// Updates a PIN number for a given card,
     /// this call is asynchronous, implement the completion block to receive the updates
     @objc
@@ -89,13 +89,13 @@ public class STPPinManagementService: NSObject {
     ) {
         let endpoint = "issuing/cards/\(cardId)/pin"
         let parameters =
-            [
-                "verification": [
-                    "id": verificationId,
-                    "one_time_code": oneTimeCode,
-                ],
-                "pin": newPin,
-            ] as [String: Any]
+        [
+            "verification": [
+                "id": verificationId,
+                "one_time_code": oneTimeCode,
+            ],
+            "pin": newPin,
+        ] as [String: Any]
         keyManager?.getOrCreateKey({ ephemeralKey, keyError in
             if ephemeralKey == nil {
                 completion(nil, .ephemeralKeyError, keyError)
@@ -131,6 +131,6 @@ public class STPPinManagementService: NSObject {
             }
         })
     }
-
+    
     private var keyManager: STPEphemeralKeyManager?
 }

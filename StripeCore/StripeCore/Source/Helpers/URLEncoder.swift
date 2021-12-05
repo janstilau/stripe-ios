@@ -7,21 +7,23 @@
 
 import Foundation
 
+/*
+    这个类, 就是将 KeyValue 变为 Data 形式的一个类.
+ */
 @_spi(STP) public final class URLEncoder {
     public class func string(byURLEncoding string: String) -> String {
         return escape(string)
     }
-
+    
     public class func stringByReplacingSnakeCase(withCamelCase input: String) -> String {
         let parts: [String] = input.components(separatedBy: "_")
         var camelCaseParam = ""
         for (idx, part) in parts.enumerated() {
             camelCaseParam += idx == 0 ? part : part.capitalized
         }
-
         return camelCaseParam
     }
-
+    
     @objc(queryStringFromParameters:)
     public class func queryString(from parameters: [String: Any]) -> String {
         return query(parameters)
@@ -38,33 +40,43 @@ struct Key {
     let parts: [Part]
 }
 
-/// Creates a percent-escaped, URL encoded query string components from the given key-value pair recursively.
-///
-/// - Parameters:
-///   - key:   Key of the query component.
-///   - value: Value of the query component.
-///
-/// - Returns: The percent-escaped, URL encoded query string components.
-private func queryComponents(fromKey key: String, value: Any) -> [(String, String)] {
+/*
+    Any 作为一个, 泛型类型, 是无法直接变化成为 String 的.
+    在这里, 根据 Value 的类型, 进行了一次转化的动作.
+ 
+    student: [
+        age: 10,
+        name: "Justin"
+    ]
+ */
+private func queryComponents(fromKey key: String,
+                             value: Any) -> [(String, String)] {
     func unwrap<T>(_ any: T) -> Any {
         let mirror = Mirror(reflecting: any)
-        guard mirror.displayStyle == .optional, let first = mirror.children.first else {
+        guard mirror.displayStyle == .optional,
+              let first = mirror.children.first else {
             return any
         }
         return first.value
     }
-
+    
     var components: [(String, String)] = []
     switch value {
+        // 在, Get 里面, 其实没有统一的解码思路, 所以一般就是传递 JSON 字符串作为最终的传值的方案.
     case let dictionary as [String: Any]:
         for nestedKey in dictionary.keys.sorted() {
             let value = dictionary[nestedKey]!
             let escapedNestedKey = escape(nestedKey)
+            // student[age] = 10
             components += queryComponents(fromKey: "\(key)[\(escapedNestedKey)]", value: value)
         }
     case let array as [Any]:
         for (index, value) in array.enumerated() {
             components += queryComponents(fromKey: "\(key)[\(index)]", value: value)
+        }
+    case let set as Set<AnyHashable>:
+        for value in Array(set) {
+            components += queryComponents(fromKey: "\(key)", value: value)
         }
     case let number as NSNumber:
         if number.isBool {
@@ -74,14 +86,11 @@ private func queryComponents(fromKey key: String, value: Any) -> [(String, Strin
         }
     case let bool as Bool:
         components.append((key, escape(bool ? "true" : "false")))
-    case let set as Set<AnyHashable>:
-        for value in Array(set) {
-            components += queryComponents(fromKey: "\(key)", value: value)
-        }
     default:
         let unwrappedValue = unwrap(value)
         components.append((key, escape("\(unwrappedValue)")))
     }
+    
     return components
 }
 
@@ -94,9 +103,11 @@ private func escape(_ string: String) -> String {
     string.addingPercentEncoding(withAllowedCharacters: URLQueryAllowed) ?? string
 }
 
+// 把一个字典, 变为一个字符串.
 private func query(_ parameters: [String: Any]) -> String {
+    // components 是 key value 的这种格式的.
     var components: [(String, String)] = []
-
+    
     for key in parameters.keys.sorted(by: <) {
         let value = parameters[key]!
         components += queryComponents(fromKey: escape(key), value: value)
@@ -119,7 +130,7 @@ private let URLQueryAllowed: CharacterSet = {
     let subDelimitersToEncode = "!$&'()*+,;="
     let encodableDelimiters = CharacterSet(
         charactersIn: "\(generalDelimitersToEncode)\(subDelimitersToEncode)")
-
+    
     return CharacterSet.urlQueryAllowed.subtracting(encodableDelimiters)
 }()
 

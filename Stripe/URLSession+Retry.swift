@@ -15,6 +15,7 @@ extension URLSession {
     func stp_performDataTask(with request: URLRequest,
                   completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void,
                   retryCount: Int = StripeAPI.maxRetries) {
+        
         let task = dataTask(with: request) { (data, response, error) in
             if let httpResponse = response as? HTTPURLResponse,
                httpResponse.statusCode == 429,
@@ -26,6 +27,7 @@ extension URLSession {
                 
                 if #available(iOS 13.0, *) {
                     let fireDate = Date() + delayTime
+                    // 这里, 居然有了 schedule 的实现. 
                     self.delegateQueue.schedule(after: .init(fireDate)) {
                         self.stp_performDataTask(with: request, completionHandler: completionHandler, retryCount: retryCount - 1)
                     }

@@ -383,6 +383,7 @@ public class STPPaymentContext: NSObject, STPAuthenticationContext,
                 }
             }
         })
+        
         apiAdapter.retrieveCustomer({ customer, retrieveCustomerError in
             stpDispatchToMainThreadIfNecessary({
                 guard let strongSelf = weakSelf else {

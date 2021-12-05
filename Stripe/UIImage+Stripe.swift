@@ -9,6 +9,11 @@
 import UIKit
 
 extension UIImage {
+    
+    /*
+        这种进行图片压缩的方式, 真实通用的一种方式.
+        在这里, 主要是使用了 size 的方式进行的裁剪压缩.
+     */
     @objc(stp_jpegDataWithMaxFileSize:) func stp_jpegData(withMaxFileSize maxBytes: Int) -> Data {
         var scale: CGFloat = 1.0
         var imageData = self.jpegData(compressionQuality: 0.5)
@@ -28,6 +33,7 @@ extension UIImage {
                 let newImageSize = CGSize(
                     width: CGFloat(floor(size.width * scale)),
                     height: CGFloat(floor(size.height * scale)))
+                
                 UIGraphicsBeginImageContextWithOptions(newImageSize, false, self.scale)
                 draw(in: CGRect(x: 0, y: 0, width: newImageSize.width, height: newImageSize.height))
                 let newImage = UIGraphicsGetImageFromCurrentImageContext()

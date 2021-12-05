@@ -85,21 +85,7 @@ public class STPBankAccountParams: NSObject, STPFormEncodable {
     // MARK: - Description
     /// :nodoc:
     @objc public override var description: String {
-        let props = [
-            // Object
-            String(format: "%@: %p", NSStringFromClass(STPBankAccountParams.self), self),
-            // Basic account details
-            "routingNumber = \(routingNumber ?? "")",
-            "last4 = \(last4 ?? "")",
-            // Additional account details (alphabetical)
-            "country = \(country ?? "")",
-            "currency = \(currency ?? "")",
-            // Owner details
-            "accountHolderName = \(((accountHolderName) != nil ? "<redacted>" : nil) ?? "")",
-            "accountHolderType = \(STPBankAccountParams.string(from: accountHolderType))",
-        ]
-
-        return "<\(props.joined(separator: "; "))>"
+        return ""
     }
 
     // MARK: - STPFormEncodable

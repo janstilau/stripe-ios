@@ -8,6 +8,7 @@
 
 import Foundation
 
+// 在这里, 主动地进行主线程的调度的动作. 
 func stpDispatchToMainThreadIfNecessary(_ block: @escaping () -> Void) {
     if Thread.isMainThread {
         block()

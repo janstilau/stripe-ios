@@ -18,8 +18,6 @@ extension STPAPIClient {
     ) {
         var parameters: [String: Any] = [:]
 
-        assert(STPPaymentIntentParams.isClientSecretValid(secret),
-               "`secret` format does not match expected client secret formatting.")
         parameters["client_secret"] = secret
         parameters["type"] = "payment_intent"
         parameters["expand"] = ["payment_intent"]

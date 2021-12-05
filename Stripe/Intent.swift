@@ -13,6 +13,7 @@ import Foundation
 
 /// An internal type representing either a PaymentIntent or a SetupIntent
 enum Intent {
+    
     case paymentIntent(STPPaymentIntent)
     case setupIntent(STPSetupIntent)
 

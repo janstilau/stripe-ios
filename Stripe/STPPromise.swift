@@ -9,34 +9,37 @@
 import Foundation
 
 class STPPromise<T>: NSObject {
+    
     typealias STPPromiseErrorBlock = (Error) -> Void
-
+    
     typealias STPPromiseValueBlock = (T) -> Void
-
+    
     typealias STPPromiseCompletionBlock = (T?, Error?) -> Void
-
+    
     typealias STPPromiseMapBlock = (T) -> Any?
-
+    
     typealias STPPromiseFlatMapBlock = (T) -> STPPromise
-
+    
     var completed: Bool {
         return error != nil || value != nil
     }
+    
     private(set) var value: T?
     private(set) var error: Error?
-
+    
     private var successCallbacks: [STPPromiseValueBlock] = []
     private var errorCallbacks: [STPPromiseErrorBlock] = []
-
+    
     convenience init(error: Error) {
         self.init()
         self.fail(error)
     }
-
+    
     convenience init(value: T) {
         self.init()
         self.succeed(value)
     }
+    
     func succeed(_ value: T) {
         if completed {
             return
@@ -50,7 +53,7 @@ class STPPromise<T>: NSObject {
             self.errorCallbacks = []
         })
     }
-
+    
     func fail(_ error: Error) {
         if completed {
             return
@@ -64,7 +67,7 @@ class STPPromise<T>: NSObject {
             self.errorCallbacks = []
         })
     }
-
+    
     func complete(with promise: STPPromise) {
         weak var weakSelf = self
         promise.onSuccess({ value in
@@ -75,7 +78,7 @@ class STPPromise<T>: NSObject {
             strongSelf?.fail(error)
         })
     }
-
+    
     @discardableResult func onSuccess(_ callback: @escaping STPPromiseValueBlock) -> Self {
         if let value = value {
             stpDispatchToMainThreadIfNecessary({
@@ -86,7 +89,7 @@ class STPPromise<T>: NSObject {
         }
         return self
     }
-
+    
     @discardableResult func onFailure(_ callback: @escaping STPPromiseErrorBlock) -> Self {
         if let error = error {
             stpDispatchToMainThreadIfNecessary({
@@ -97,7 +100,7 @@ class STPPromise<T>: NSObject {
         }
         return self
     }
-
+    
     @discardableResult func onCompletion(_ callback: @escaping STPPromiseCompletionBlock) -> Self {
         return onSuccess({ value in
             callback(value, nil)
@@ -105,7 +108,7 @@ class STPPromise<T>: NSObject {
             callback(nil, error)
         })
     }
-
+    
     @discardableResult func map(_ callback: @escaping STPPromiseMapBlock) -> STPPromise {
         let wrapper = STPPromise.init()
         onSuccess({ value in
@@ -115,7 +118,7 @@ class STPPromise<T>: NSObject {
         })
         return wrapper
     }
-
+    
     @discardableResult func flatMap(_ callback: @escaping STPPromiseFlatMapBlock) -> STPPromise {
         let wrapper = STPPromise.init()
         onSuccess({ value in

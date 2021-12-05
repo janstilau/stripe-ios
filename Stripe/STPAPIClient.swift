@@ -15,6 +15,9 @@ import UIKit
 import Stripe3DS2
 #endif
 
+/*
+ Strip 的内部, 主要是对于网络请求的封装.
+ */
 /// A client for making connections to the Stripe API.
 public class STPAPIClient: NSObject {
     
@@ -47,8 +50,8 @@ public class STPAPIClient: NSObject {
         }
     }
     /*
-        这里, 应该变为一个 Private 的才对.
-        之所以, 用 String?, 还是明确的表明了, 这个值是否被用户自定义过. 如果, 没有被自定义过, 那么就使用 default 的值.
+     这里, 应该变为一个 Private 的才对.
+     之所以, 用 String?, 还是明确的表明了, 这个值是否被用户自定义过. 如果, 没有被自定义过, 那么就使用 default 的值.
      */
     private var _publishableKey: String?
     
@@ -70,7 +73,7 @@ public class STPAPIClient: NSObject {
     @objc public static let apiVersion = APIVersion
     
     // MARK: Internal/private properties
-    var apiURL: URL! = URL(string: APIBaseURL)
+    var apiURL: URL! = URL(string: APIBaseURL) // BaseUrl.
     let urlSession = URLSession(configuration: StripeAPIConfiguration.sharedUrlSessionConfiguration)
     
     private var sourcePollers: [String: NSObject]?
@@ -84,9 +87,9 @@ public class STPAPIClient: NSObject {
     }
     
     /*
-        以上, 所有的数据都有着默认值.
-        同时, 由是 Public 的, 给与了外界, 可以自定义的权利.
-        api 的设计, 应该这样. 提供一个 Defualt 的, 可以保证功能类的逻辑, 可以顺利的执行. 同时, 在变化的地方, 给与外界控制类内逻辑的权利.
+     以上, 所有的数据都有着默认值.
+     同时, 由是 Public 的, 给与了外界, 可以自定义的权利.
+     api 的设计, 应该这样. 提供一个 Defualt 的, 可以保证功能类的逻辑, 可以顺利的执行. 同时, 在变化的地方, 给与外界控制类内逻辑的权利.
      */
     // MARK: Initializers
     override init() {
@@ -98,7 +101,7 @@ public class STPAPIClient: NSObject {
     
     // 对于 convenience 方法来说, 可以组织好所有的数据, 调用 init 方法.
     // 也可以在调用 init 方法之后, 进行自定义的操作.
-    // 这两种思路, 都没有问题. 
+    // 这两种思路, 都没有问题.
     @objc
     public convenience init(publishableKey: String) {
         self.init()
@@ -123,8 +126,9 @@ public class STPAPIClient: NSObject {
     
     @objc(configuredRequestForURL:additionalHeaders:)
     func configuredRequest(for url: URL, additionalHeaders: [String: String] = [:])
-    -> NSMutableURLRequest
-    {
+    -> NSMutableURLRequest {
+        // 将, 所有的默认参数, 都放到了 Header 的内部.
+        // 然后将, 所有的传递过来的 Header, 放到了 Request 的 Header 的内部.
         let request = NSMutableURLRequest(url: url)
         var headers = defaultHeaders()
         for (k, v) in additionalHeaders { headers[k] = v }  // additionalHeaders can overwrite defaultHeaders
@@ -144,24 +148,23 @@ public class STPAPIClient: NSObject {
         }
         defaultHeaders["Stripe-Version"] = stripeVersion
         defaultHeaders["Stripe-Account"] = stripeAccount
+        // 在这里, 也会返回所有的, 验证相关的 Header
         for (k, v) in authorizationHeader() { defaultHeaders[k] = v }
         return defaultHeaders
     }
     
-    func createToken(
-        withParameters parameters: [String: Any],
-        completion: @escaping STPTokenCompletionBlock
-    ) {
-        let tokenType = STPAnalyticsClient.tokenType(fromParameters: parameters)
-        STPAnalyticsClient.sharedClient.logTokenCreationAttempt(
-            with: configuration,
-            tokenType: tokenType)
+    
+    /*
+     这里, STP Client 的设计, 很像是 APIWrapper 里面的设计.
+     创建一个方法, 包装起了对于 Reqeust 以及 Reponse 的构建工作.
+     只不过, 在这里, stripe 使用的还是原始的参数的传递的方式, 所以其实不用那么多的 Request 类的设计.
+     */
+    func createToken( withParameters parameters: [String: Any], completion: @escaping STPTokenCompletionBlock ) {
         let preparedParameters = Self.paramsAddingPaymentUserAgent(parameters)
-        APIRequest<STPToken>.post(
-            with: self,
-            endpoint: APIEndpointToken,
-            parameters: preparedParameters
-        ) { object, _, error in
+        // APIEndpointToken 是这个功能, 所从属的 Path.
+        APIRequest<STPToken>.post( with: self,
+                                   endpoint: APIEndpointToken,
+                                   parameters: preparedParameters ) { object, _, error in
             completion(object, error)
         }
     }
@@ -169,18 +172,18 @@ public class STPAPIClient: NSObject {
     // MARK: Helpers
     
     /*
-        PublicKey, 有着明显的命名的规则.
-        可以根据这个规则, 在客户端, 进行一些简单的验证的操作.
+     PublicKey, 有着明显的命名的规则.
+     可以根据这个规则, 在客户端, 进行一些简单的验证的操作.
      */
     static var didShowTestmodeKeyWarning = false
     class func validateKey(_ publishableKey: String?) {
         guard let publishableKey = publishableKey,
-                !publishableKey.isEmpty else {
-            assertionFailure(
-                "You must use a valid publishable key. For more info, see https://stripe.com/docs/keys"
-            )
-            return
-        }
+              !publishableKey.isEmpty else {
+                  assertionFailure(
+                    "You must use a valid publishable key. For more info, see https://stripe.com/docs/keys"
+                  )
+                  return
+              }
         let secretKey = publishableKey.hasPrefix("sk_")
         assert(
             !secretKey,
@@ -196,6 +199,7 @@ public class STPAPIClient: NSObject {
 #endif
     }
     
+    // 独一份的数据, 就应该放到 Static 里面.
     static var paymentUserAgent: String {
         var paymentUserAgent = "stripe-ios/\(STPAPIClient.STPSDKVersion)"
         let components = [paymentUserAgent] + STPAnalyticsClient.sharedClient.productUsage
@@ -209,6 +213,8 @@ public class STPAPIClient: NSObject {
         return newParams
     }
     
+    // 在这里, 进行一些默认参数的配置.
+    // 主要是将设备的一些信息, 进行了收集.
     class func stripeUserAgentDetails(with appInfo: STPAppInfo?) -> String {
         var details: [String: String] = [
             "lang": "objective-c",
@@ -276,15 +282,21 @@ public class STPAPIClient: NSObject {
     }
     
     var isTestmode: Bool {
-        guard let publishableKey = publishableKey, !publishableKey.isEmpty else {
-            return false
-        }
+        guard let publishableKey = publishableKey,
+              !publishableKey.isEmpty else {
+                  return false
+              }
+        // 根据, key 是否以 pk_test 开头, 来判断是不是测试的环境.
         return publishableKey.lowercased().hasPrefix("pk_test")
     }
     
 }
 
 // MARK: Bank Accounts
+
+/*
+ 在各个 Extension 里面, 按照接口的内容, 进行了相关 APi 的封装操作.
+ */
 
 /// STPAPIClient extensions to create Stripe tokens from bank accounts.
 extension STPAPIClient {
@@ -360,11 +372,20 @@ extension STPAPIClient {
     public func createToken(
         withConnectAccount account: STPConnectAccountParams, completion: STPTokenCompletionBlock?
     ) {
+        /*
+            STPFormEncoder.dictionary 这个 API, 可以让特定的 Model, 变为 Dict 的形式.
+         */
         var params = STPFormEncoder.dictionary(forObject: account)
+        
+        // Telemetry 相关的东西, 都写到了 STPTelemetryClient 里面, 当做一个工具类来进行使用.
         STPTelemetryClient.shared.addTelemetryFields(toParams: &params)
+        
         if let completion = completion {
+            // createToken 里面, 已经进行了网络请求.
+            // 有大量的管理, CreateToken 的工作, 这是一个安全性所需要增加的一个步骤.
             createToken(withParameters: params, completion: completion)
         }
+        // 这里, 已经和主业务无关了.
         STPTelemetryClient.shared.sendTelemetryData()
     }
 }
@@ -373,10 +394,8 @@ extension STPAPIClient {
 
 /// STPAPIClient extensions to upload files.
 extension STPAPIClient {
-    func data(
-        forUploadedImage image: UIImage,
-        purpose: STPFilePurpose
-    ) -> Data {
+    
+    func data( forUploadedImage image: UIImage, purpose: STPFilePurpose ) -> Data {
         
         var maxBytes: Int = 0
         switch purpose {
@@ -389,6 +408,9 @@ extension STPAPIClient {
         default:
             break
         }
+        /*
+            根据场景的不同, 进行 Image 的数据读取, 其实就是, 根据不同的格式, 进行 Image 数据的压缩.
+         */
         return image.stp_jpegData(withMaxFileSize: maxBytes)
     }
     
@@ -405,11 +427,7 @@ extension STPAPIClient {
     /// (and any errors that may have occurred).
     /// - seealso: https://stripe.com/docs/file-upload
     @objc
-    public func uploadImage(
-        _ image: UIImage,
-        purpose: STPFilePurpose,
-        completion: STPFileCompletionBlock?
-    ) {
+    public func uploadImage( _ image: UIImage, purpose: STPFilePurpose, completion: STPFileCompletionBlock? ) {
         
         let purposePart = STPMultipartFormDataPart()
         purposePart.name = "purpose"
@@ -424,9 +442,7 @@ extension STPAPIClient {
         imagePart.filename = "image.jpg"
         imagePart.contentType = "image/jpeg"
         
-        imagePart.data = self.data(
-            forUploadedImage: image,
-            purpose: purpose)
+        imagePart.data = self.data( forUploadedImage: image, purpose: purpose)
         
         let boundary = STPMultipartFormDataEncoder.generateBoundary()
         let data = STPMultipartFormDataEncoder.multipartFormData(
@@ -437,12 +453,11 @@ extension STPAPIClient {
             request = configuredRequest(for: url)
         }
         request?.httpMethod = "POST"
+        // 前面, Data 是已经设置好了 Boundary 的值, 在这里, 将 Data 的部分, 添加到了 Request 里面.
         request?.stp_setMultipartForm(data, boundary: boundary)
         
         if let request = request {
-            urlSession.stp_performDataTask(
-                with: request as URLRequest,
-                completionHandler: { body, response, error in
+            urlSession.stp_performDataTask( with: request as URLRequest, completionHandler: { body, response, error in
                     var jsonDictionary: [AnyHashable: Any]?
                     if let body = body {
                         jsonDictionary =
@@ -483,13 +498,10 @@ extension STPAPIClient {
     ///   - cardParams:  The user's card details. Cannot be nil. - seealso: https://stripe.com/docs/api#create_card_token
     ///   - completion:  The callback to run with the returned Stripe token (and any errors that may have occurred).
     @objc
-    public func createToken(
-        withCard cardParams: STPCardParams, completion: @escaping STPTokenCompletionBlock
-    ) {
+    public func createToken( withCard cardParams: STPCardParams, completion: @escaping STPTokenCompletionBlock ) {
         var params = STPFormEncoder.dictionary(forObject: cardParams)
         STPTelemetryClient.shared.addTelemetryFields(toParams: &params)
         createToken(withParameters: params, completion: completion)
-        STPTelemetryClient.shared.sendTelemetryData()
     }
     
     /// Converts a CVC string into a Stripe token using the Stripe API.
@@ -526,10 +538,6 @@ extension STPAPIClient {
     public func createSource(
         with sourceParams: STPSourceParams, completion: @escaping STPSourceCompletionBlock
     ) {
-        let sourceType = STPSource.string(from: sourceParams.type)
-        STPAnalyticsClient.sharedClient.logSourceCreationAttempt(
-            with: configuration,
-            sourceType: sourceType)
         sourceParams.redirectMerchantName = configuration.companyName
         var params = STPFormEncoder.dictionary(forObject: sourceParams)
         STPTelemetryClient.shared.addTelemetryFields(toParams: &params)
