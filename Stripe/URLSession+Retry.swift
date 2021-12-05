@@ -8,14 +8,14 @@
 
 import Foundation
 
-/*
-    真正的进行网络请求的代码.
- */
 extension URLSession {
     func stp_performDataTask(with request: URLRequest,
                   completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void,
                   retryCount: Int = StripeAPI.maxRetries) {
-        
+            
+        /*
+            在这里, 才会真正的使用 DataTask 进行网络请求.
+         */
         let task = dataTask(with: request) { (data, response, error) in
             if let httpResponse = response as? HTTPURLResponse,
                httpResponse.statusCode == 429,

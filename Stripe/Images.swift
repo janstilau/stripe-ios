@@ -9,11 +9,7 @@
 import Foundation
 import UIKit
 
-// TODO(yuki|https://jira.corp.stripe.com/browse/MOBILESDK-309): Refactor STPImageLibrary's images to live here as well
-
-/// The canonical set of all image files in the SDK.
-/// This helps us avoid duplicates and automatically test that all images load properly
-/// Raw value is the image file name. We use snake case to make long names easier to read.
+// 将, 所有特殊的图片, 使用特殊的命名, 用面向对象的方式, 进行管理. 
 enum Image: String, CaseIterable {
     /// https://developer.apple.com/apple-pay/marketing/
     case apple_pay_mark = "apple_pay_mark"

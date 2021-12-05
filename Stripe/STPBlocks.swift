@@ -151,9 +151,9 @@ public typealias STPIntentClientSecretCompletionBlock = (String?, Error?) -> Voi
 
 /**
  A callback to be run with an STPRadarSession
-
+ 
  - Parameters:
-    - radarSession: The RadarSession object.
-    - error: The error that occured, if any.
+ - radarSession: The RadarSession object.
+ - error: The error that occured, if any.
  */
 public typealias STPRadarSessionCompletionBlock = (STPRadarSession?, Error?) -> Void

@@ -1,37 +1,19 @@
-//
-// BackwardsCompatibleColors.swift
-//
-// This file is adapted from https://github.com/noahsark769/ColorCompatibility
-// Thank you Noah Gilmore!
-// Copyright (c) 2019 Noah Gilmore <noah.w.gilmore@gmail.com>
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
 import UIKit
 
+/*
+    在统一的一个地方, 进行颜色的配置.
+    在其他的地方, 直接引用到这个颜色的配置.
+    可以看到, 这种做法, 其实是苹果优先使用的, 现在这里的配置, 也是优先使用苹果的方案, 如果没有, 才使用自己的颜色配置. 
+ */
 enum CompatibleColor {
+    
     static var label: UIColor {
         if #available(iOS 13, *) {
             return .label
         }
         return UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
     }
+    
     static var secondaryLabel: UIColor {
         if #available(iOS 13, *) {
             return .secondaryLabel
@@ -40,6 +22,7 @@ enum CompatibleColor {
             red: 0.23529411764705882, green: 0.23529411764705882, blue: 0.2627450980392157,
             alpha: 0.6)
     }
+    
     static var tertiaryLabel: UIColor {
         if #available(iOS 13, *) {
             return .tertiaryLabel

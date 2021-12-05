@@ -11,8 +11,12 @@ import UIKit
 
 @available(macCatalyst 14.0, *)
 class STPCameraView: UIView {
+    
     private var flashLayer: CALayer?
     
+    /*
+        这种写法很普遍. 这个 View, 就是为了使得 Layer 纳入到 View 的体系里面.
+     */
     var captureSession: AVCaptureSession? {
         get {
             return (videoPreviewLayer.session)!
@@ -28,13 +32,14 @@ class STPCameraView: UIView {
     
     func playSnapshotAnimation() {
         CATransaction.begin()
-        CATransaction.setValue(
-            kCFBooleanTrue,
-            forKey: kCATransactionDisableActions)
+        // 设置了 CATransaction 的这个值, 就能让后面对于 Layer 属性设置的隐式动画消失.
+        CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
         flashLayer?.frame = CGRect(
             x: 0, y: 0, width: layer.bounds.size.width, height: layer.bounds.size.height)
         flashLayer?.opacity = 1.0
         CATransaction.commit()
+        
+        // 在前面, 重置了 Layer 的属性之后, 才进行真正的动画的编写.
         DispatchQueue.main.async(execute: {
             let fadeAnim = CABasicAnimation(keyPath: "opacity")
             fadeAnim.fromValue = NSNumber(value: 1.0)
@@ -47,6 +52,7 @@ class STPCameraView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         flashLayer = CALayer()
         if let flashLayer = flashLayer {
             layer.addSublayer(flashLayer)
@@ -57,7 +63,8 @@ class STPCameraView: UIView {
         layer.masksToBounds = true
         videoPreviewLayer.videoGravity = .resizeAspectFill
         
-        self.backgroundColor = UIColor.red.withAlphaComponent(0.3)
+        self.layer.borderColor = UIColor.green.cgColor
+        self.layer.borderWidth = 1
     }
     
     override class var layerClass: AnyClass {

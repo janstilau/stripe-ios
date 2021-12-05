@@ -19,18 +19,21 @@ enum STPCardScannerError: Int {
 
 @available(iOS 13, macCatalyst 14, *)
 @objc protocol STPCardScannerDelegate: NSObjectProtocol {
-    @objc(cardScanner:didFinishWithCardParams:error:) func cardScanner(
-        _ scanner: STPCardScanner, didFinishWith cardParams: STPPaymentMethodCardParams?,
+    @objc(cardScanner:didFinishWithCardParams:error:)
+    func cardScanner(
+        _ scanner: STPCardScanner,
+        didFinishWith cardParams: STPPaymentMethodCardParams?,
         error: Error?)
 }
 
+/*
+    这是一个控制类, 用来进行卡号的解析的工作.
+ */
 @available(iOS 13, macCatalyst 14, *)
 class STPCardScanner: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
-    // iOS will kill the app if it tries to request the camera without an NSCameraUsageDescription
-    static let cardScanningAvailableCameraHasUsageDescription = {
-        return
-            (Bundle.main.infoDictionary?["NSCameraUsageDescription"] != nil
-            || Bundle.main.localizedInfoDictionary?["NSCameraUsageDescription"] != nil)
+    
+    static let cardScanningAvailableCameraHasUsageDescription: Bool = {
+        return true
     }()
 
     class func cardScanningAvailable() -> Bool {
@@ -82,8 +85,7 @@ class STPCardScanner: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
 
-    override init() {
-    }
+    override init() {}
 
     init(delegate: STPCardScannerDelegate?) {
         super.init()
